@@ -5,8 +5,7 @@ import '../widgets/app_drawer.dart';
 import '../widgets/category_tab.dart';
 import '../widgets/car_card.dart';
 import 'car_detail_page.dart';
-import 'favorites_page.dart'; // Assurez-vous d'avoir une page pour les favoris
-     // Assurez-vous d'avoir une page pour la connexion
+import 'favorites_page.dart';
 
 class RentCarsHomePage extends StatefulWidget {
   @override
@@ -15,9 +14,8 @@ class RentCarsHomePage extends StatefulWidget {
 
 class _RentCarsHomePageState extends State<RentCarsHomePage> {
   String selectedCategory = 'All';
-  int _selectedIndex = 0; // Gère l'index de la page sélectionnée pour la barre de navigation
+  int _selectedIndex = 0;
 
-  // Sample car data with correct image paths
   final List<Map<String, dynamic>> cars = [
     {
       'imageUrl': 'assets/images/day-exterior-4.png',
@@ -61,7 +59,6 @@ class _RentCarsHomePageState extends State<RentCarsHomePage> {
     });
   }
 
-  // Fonction pour changer de page en fonction de l'index sélectionné
   void _onItemTapped(int index) {
     setState(() {
       _selectedIndex = index;
@@ -193,22 +190,32 @@ class _RentCarsHomePageState extends State<RentCarsHomePage> {
           ],
         ),
       ),
-      // Bottom Navigation Bar
       bottomNavigationBar: BottomNavigationBar(
-        currentIndex: _selectedIndex, // Indique l'index actuel de la page
+        currentIndex: _selectedIndex,
         onTap: _onItemTapped,
+        type: BottomNavigationBarType.fixed,
+        selectedItemColor: Colors.blue, 
+        unselectedItemColor: Colors.grey, 
         items: [
           BottomNavigationBarItem(
-            icon: Icon(Icons.favorite),
-            label: 'Favoris',
+            icon: Icon(Icons.map), 
+            label: '',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.account_circle),
-            label: 'Profil',
+            icon: Icon(Icons.swap_horiz), 
+            label: '',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.login),
-            label: 'Login',
+            icon: Icon(Icons.calendar_today), 
+            label: '',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.favorite), 
+            label: '',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.account_circle), 
+            label: '',
           ),
         ],
       ),

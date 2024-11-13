@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-class CarCard extends StatelessWidget {
+class CarCard extends StatefulWidget {
   final String imageUrl;
   final String model;
   final String location;
@@ -9,8 +9,7 @@ class CarCard extends StatelessWidget {
   final String type;
   final VoidCallback onTap;
 
-  const CarCard({
-    Key? key,
+  CarCard({
     required this.imageUrl,
     required this.model,
     required this.location,
@@ -18,59 +17,98 @@ class CarCard extends StatelessWidget {
     required this.rating,
     required this.type,
     required this.onTap,
-  }) : super(key: key);
+  });
+
+  @override
+  _CarCardState createState() => _CarCardState();
+}
+
+class _CarCardState extends State<CarCard> {
+  bool isFavorited = false;
+
+  void toggleFavorite() {
+    setState(() {
+      isFavorited = !isFavorited;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: onTap, // Appelle la fonction de navigation passée à CarCard
+      onTap: widget.onTap,
       child: Card(
-        elevation: 4,
-        margin: EdgeInsets.symmetric(vertical: 8),
+        margin: EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(12),
         ),
+        elevation: 4.0,  // Adding shadow to the card
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            ClipRRect(
-              borderRadius: BorderRadius.circular(12),
-              child: Image.asset(
-                imageUrl,
-                fit: BoxFit.cover,
-                height: 200, // Ajustez la hauteur selon vos besoins
-                width: double.infinity,
-              ),
+            Stack(
+              children: [
+                ClipRRect(
+                  borderRadius: BorderRadius.vertical(top: Radius.circular(12)),
+                  child: Image.asset(
+                    widget.imageUrl,
+                    height: 180,
+                    width: double.infinity,
+                    fit: BoxFit.cover,
+                  ),
+                ),
+                Positioned(
+                  right: 8,
+                  top: 8,
+                  child: IconButton(
+                    icon: Icon(
+                      isFavorited ? Icons.favorite : Icons.favorite_border,
+                      color: isFavorited ? Colors.red : Colors.grey,
+                    ),
+                    onPressed: toggleFavorite,
+                  ),
+                ),
+              ],
             ),
             Padding(
-              padding: const EdgeInsets.all(8.0),
+              padding: const EdgeInsets.all(12.0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    model,
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                    widget.model,
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                   SizedBox(height: 4),
                   Text(
-                    location,
+                    widget.location,
                     style: TextStyle(color: Colors.grey[600]),
                   ),
-                  SizedBox(height: 4),
-                  Row(
-                    children: [
-                      Icon(Icons.star, color: Colors.orange),
-                      SizedBox(width: 4),
-                      Text(rating.toString(), style: TextStyle(color: Colors.black)),
-                    ],
-                  ),
                   SizedBox(height: 8),
-                  Text(
-                    price,
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.orange,
-                    ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        widget.price,
+                        style: TextStyle(
+                          fontSize: 16,
+                          color: Colors.orange,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      Row(
+                        children: [
+                          Icon(Icons.star, color: Colors.amber, size: 16),
+                          SizedBox(width: 4),
+                          Text(
+                            widget.rating.toString(),
+                            style: TextStyle(fontSize: 16),
+                          ),
+                        ],
+                      ),
+                    ],
                   ),
                 ],
               ),
