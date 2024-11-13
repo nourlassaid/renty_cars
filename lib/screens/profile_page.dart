@@ -28,11 +28,11 @@ class ProfilePage extends StatelessWidget {
             ),
             SizedBox(height: 10),
             Text(
-              'Aymen Missaoui', // replace with user name
+              'Nour lassaid', // replace with user name
               style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
             ),
             Text(
-              'Djerba houmet essaouk', // replace with user location
+              'nefta', // replace with user location
               style: TextStyle(color: Colors.grey),
             ),
             SizedBox(height: 20),
