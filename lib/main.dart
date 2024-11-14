@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:rentycars_nour/screens/car_detail_page.dart';
-import 'screens/home_page.dart';  // Import home page
-import 'screens/profile_page.dart';  // Import profile page
-import 'screens/loginpage.dart';  // Import login page
-import 'screens/create_account_page.dart';  // Import create account page
+import 'package:rentycars_nour/screens/ReservationsPage.dart';
+import 'package:rentycars_nour/screens/home_page.dart';  // Import home page
+import 'package:rentycars_nour/screens/profile_page.dart';  // Import profile page
+import 'package:rentycars_nour/screens/loginpage.dart';  // Import login page
+import 'package:rentycars_nour/screens/create_account_page.dart';  // Import create account page
+import 'package:rentycars_nour/widgets/app_drawer.dart';  // Import AppDrawer widget
 
 void main() {
   runApp(MyApp());
@@ -17,10 +18,11 @@ class MyApp extends StatelessWidget {
       initialRoute: '/',  // Initial route (home page)
       routes: {
         '/': (context) => RentCarsHomePage(),  // Home page route
-        '/home': (context) => RentCarsHomePage(),
         '/profile': (context) => ProfilePage(),  // Profile page route
         '/login': (context) => LoginPage(),  // Login page route
         '/create_account': (context) => CreateAccountPage(),  // Create account page route
+                '/reservations': (context) => ReservationsPage(),
+
       },
     );
   }

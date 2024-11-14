@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../screens/LoginPage.dart';
+import '../screens/LoginPage.dart';  // Adjust import if needed for your file structure
 
 class CarDetailPage extends StatelessWidget {
   final String imageUrl;
@@ -9,8 +9,8 @@ class CarDetailPage extends StatelessWidget {
   final double rating;
   final String type;
 
-  // Assume this variable represents the user's login status
-  final bool isLoggedIn = false; // Set this based on actual authentication status
+  // Simulating login status
+  final bool isLoggedIn = false; // Update based on actual authentication status
 
   const CarDetailPage({
     Key? key,
@@ -63,7 +63,6 @@ class CarDetailPage extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      // Car details
                       Text(
                         model,
                         style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
@@ -76,7 +75,7 @@ class CarDetailPage extends StatelessWidget {
                       SizedBox(height: 8),
                       Row(
                         children: [
-                          Icon(Icons.star, color: Colors.orange),
+                          Icon(Icons.star, color:Colors.blue),
                           SizedBox(width: 4),
                           Text(
                             rating.toString(),
@@ -84,7 +83,6 @@ class CarDetailPage extends StatelessWidget {
                           ),
                           GestureDetector(
                             onTap: () {
-                              // Navigate to the ReviewPage
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(builder: (context) => ReviewPage()),
@@ -99,7 +97,6 @@ class CarDetailPage extends StatelessWidget {
                       ),
                       SizedBox(height: 16),
                       Divider(),
-                      // User info and amenities
                       Row(
                         children: [
                           CircleAvatar(
@@ -151,7 +148,6 @@ class CarDetailPage extends StatelessWidget {
               ],
             ),
           ),
-          // Bottom booking button
           Positioned(
             bottom: 0,
             left: 0,
@@ -169,7 +165,7 @@ class CarDetailPage extends StatelessWidget {
                   ElevatedButton(
                     onPressed: () {
                       if (!isLoggedIn) {
-                        // Navigate to the LoginPage if not logged in
+                        // Navigate to LoginPage if not logged in
                         Navigator.push(
                           context,
                           MaterialPageRoute(builder: (context) => LoginPage()),
@@ -211,33 +207,17 @@ class CarDetailPage extends StatelessWidget {
   }
 }
 
-// Define the ReviewPage
+// Define ReviewPage
 class ReviewPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text("Reviews"),
-        backgroundColor: Colors.orange,
+        backgroundColor: Colors.blue,
       ),
       body: Center(
         child: Text("This is the reviews page"),
-      ),
-    );
-  }
-}
-
-// Define the LoginPage
-class LoginPage extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text("Login"),
-        backgroundColor: Colors.orange,
-      ),
-      body: Center(
-        child: Text("This is the login page"),
       ),
     );
   }

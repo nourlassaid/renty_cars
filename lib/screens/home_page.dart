@@ -1,4 +1,3 @@
-// lib/screens/rent_cars_home_page.dart
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import '../widgets/app_drawer.dart';
@@ -77,7 +76,7 @@ class _RentCarsHomePageState extends State<RentCarsHomePage> {
             style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, fontFamily: 'Roboto'),
             children: [
               TextSpan(text: 'Rent', style: TextStyle(color: Colors.black)),
-              TextSpan(text: 'Cars', style: TextStyle(color: Colors.orange)),
+              TextSpan(text: 'Cars', style: TextStyle(color: Colors.blue,)),
             ],
           ),
         ),
@@ -201,23 +200,23 @@ class _RentCarsHomePageState extends State<RentCarsHomePage> {
         items: [
           BottomNavigationBarItem(
             icon: Icon(Icons.map), 
-            label: '',
+            label: 'Map',  // Label for the first icon
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.swap_horiz), 
-            label: '',
+            label: 'Swap',  // Label for the second icon
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.calendar_today), 
-            label: '',
+            label: 'Calendar',  // Label for the third icon
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.favorite), 
-            label: '',
+            label: 'Favorites',  // Label for the fourth icon
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.account_circle), 
-            label: '',
+            label: 'Profile',  // Label for the fifth icon
           ),
         ],
       ),

@@ -1,215 +1,108 @@
 import 'package:flutter/material.dart';
 
-class AppDrawer extends StatefulWidget {
-  @override
-  _AppDrawerState createState() => _AppDrawerState();
-}
-
-class _AppDrawerState extends State<AppDrawer> {
-  String _selectedItem = '';
-
-  // This function is called whenever an item is tapped in the drawer
-  void _onTap(String item) {
-    setState(() {
-      _selectedItem = item;
-    });
-  }
-
+class AppDrawer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Drawer(
       child: ListView(
         padding: EdgeInsets.zero,
-        children: <Widget>[
-          // Drawer Header
+        children: [
           DrawerHeader(
-            decoration: BoxDecoration(
-              color: const Color.fromARGB(255, 254, 255, 255),
-            ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            decoration: BoxDecoration(color: Colors.white),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                CircleAvatar(
+                  backgroundColor: Colors.blue,
+                  radius: 30,
+                  child: Icon(Icons.person, size: 40, color: Colors.white),
+                ),
+                SizedBox(height: 8),
                 Text(
-                  'Bienvenue',
-                  style: TextStyle(
-                    color: Colors.black,
-                    fontSize: 24,
-                    fontWeight: FontWeight.bold,
+                  'Créer un compte',
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.black),
+                ),
+                GestureDetector(
+                  onTap: () {
+                    Navigator.pushNamed(context, '/login');
+                  },
+                  child: Text(
+                    'ou se connecter',
+                    style: TextStyle(fontSize: 14, color: Colors.blue),
                   ),
                 ),
-                Icon(
-                  Icons.logo_dev, // Custom logo placeholder
-                  color: Colors.white,
-                  size: 30,
+                SizedBox(height: 8),
+                Row(
+                  children: [
+                 
+                    SizedBox(width: 8),
+                    
+                  ],
                 ),
               ],
             ),
           ),
-          
-          // Create Account Option
           ListTile(
-            title: Text(
-              'Créer un compte',
-              style: TextStyle(
-                color: _selectedItem == 'create_account' ? Colors.orange : Colors.black,
-                fontWeight: _selectedItem == 'create_account' ? FontWeight.bold : FontWeight.normal,
-              ),
-            ),
+            leading: Icon(Icons.notifications),
+            title: Text('Notifications'),
+            onTap: () {}, // Implement functionality
+          ),
+          ListTile(
+            leading: Icon(Icons.home),
+            title: Text('Réserver une voiture', style: TextStyle(color: Colors.blue)),
+            onTap: () {}, // Implement functionality
+          ),
+          ListTile(
+            leading: Icon(Icons.list_alt),
+            title: Text('Mes Réservations'),
             onTap: () {
-              _onTap('create_account');
-              Navigator.pushNamed(context, '/create_account');  // Navigate to create account page
+              Navigator.pushNamed(context, '/reservations');
             },
           ),
-          
-          // Login Option
           ListTile(
-            title: Text(
-              'Se connecter',
-              style: TextStyle(
-                color: _selectedItem == 'login' ? Colors.orange : Colors.black,
-                fontWeight: _selectedItem == 'login' ? FontWeight.bold : FontWeight.normal,
-              ),
-            ),
-            onTap: () {
-              _onTap('login');
-              Navigator.pushNamed(context, '/login');  // Navigate to login page
-            },
+            leading: Icon(Icons.account_balance_wallet),
+            title: Text('Mon portefeuille'),
+            onTap: () {}, // Implement functionality
           ),
-          
-          // Divider
-          Divider(),
-          
-          // Profile Option
           ListTile(
-            title: Row(
-              children: [
-                Icon(
-                  Icons.account_circle,
-                  color: _selectedItem == 'profile' ? Colors.orange : Colors.black,
-                ),
-                SizedBox(width: 10),
-                Text('Mon Profil'),
-              ],
-            ),
-            onTap: () {
-              _onTap('profile');
-              Navigator.pushNamed(context, '/profile');  // Navigate to profile page
-            },
+            leading: Icon(Icons.emoji_events),
+            title: Text('RentRewards'),
+            onTap: () {}, // Implement functionality
           ),
-          
-          // Reservations Option
           ListTile(
-            title: Row(
-              children: [
-                Icon(
-                  Icons.bookmark,
-                  color: _selectedItem == 'reservations' ? Colors.orange : Colors.black,
-                ),
-                SizedBox(width: 10),
-                Text('Réservations'),
-              ],
-            ),
-            onTap: () {
-              _onTap('reservations');
-              Navigator.pushNamed(context, '/reservations');  // Navigate to reservations page
-            },
+            leading: Icon(Icons.history),
+            title: Text('Historique de recherche'),
+            onTap: () {}, // Implement functionality
           ),
-
-          // Offers Option
           ListTile(
-            title: Row(
-              children: [
-                Icon(
-                  Icons.local_offer,
-                  color: _selectedItem == 'offers' ? Colors.orange : Colors.black,
-                ),
-                SizedBox(width: 10),
-                Text('Offres'),
-              ],
-            ),
-            onTap: () {
-              _onTap('offers');
-              Navigator.pushNamed(context, '/offers');  // Navigate to offers page
-            },
+            leading: Icon(Icons.local_offer),
+            title: Text('Offres'),
+            onTap: () {}, // Implement functionality
           ),
-
-          // History Option
           ListTile(
-            title: Row(
-              children: [
-                Icon(
-                  Icons.history,
-                  color: _selectedItem == 'history' ? Colors.orange : Colors.black,
-                ),
-                SizedBox(width: 10),
-                Text('Historique'),
-              ],
-            ),
-            onTap: () {
-              _onTap('history');
-              Navigator.pushNamed(context, '/history');  // Navigate to history page
-            },
+            leading: Icon(Icons.settings),
+            title: Text('Paramètres'),
+            onTap: () {}, // Implement functionality
           ),
-
-          // Divider
-          Divider(),
-          
-          // Settings Option
           ListTile(
-            title: Row(
-              children: [
-                Icon(
-                  Icons.settings,
-                  color: _selectedItem == 'settings' ? Colors.orange : Colors.black,
-                ),
-                SizedBox(width: 10),
-                Text('Paramètres'),
-              ],
-            ),
-            onTap: () {
-              _onTap('settings');
-              Navigator.pushNamed(context, '/settings');  // Navigate to settings page
-            },
+            leading: Icon(Icons.lock),
+            title: Text('Politique de confidentialité'),
+            onTap: () {}, // Implement functionality
           ),
-          
-          // Payments Option
           ListTile(
-            title: Row(
-              children: [
-                Icon(
-                  Icons.payment,
-                  color: _selectedItem == 'payments' ? Colors.orange : Colors.black,
-                ),
-                SizedBox(width: 10),
-                Text('Paiements'),
-              ],
-            ),
-            onTap: () {
-              _onTap('payments');
-              Navigator.pushNamed(context, '/payments');  // Navigate to payments page
-            },
+            leading: Icon(Icons.check_box),
+            title: Text('Termes et Conditions'),
+            onTap: () {}, // Implement functionality
           ),
-
-          // Divider
-          Divider(),
-
-          // Logout Option
           ListTile(
-            title: Row(
-              children: [
-                Icon(
-                  Icons.logout,
-                  color: _selectedItem == 'logout' ? Colors.orange : Colors.black,
-                ),
-                SizedBox(width: 10),
-                Text('Déconnexion'),
-              ],
-            ),
-            onTap: () {
-              _onTap('logout');
-              // Handle logout action (clear session, etc.)
-              Navigator.pushNamed(context, '/login');  // Navigate to login page after logout
-            },
+            leading: Icon(Icons.help),
+            title: Text('Centre d\'aide'),
+            onTap: () {}, // Implement functionality
+          ),
+          ListTile(
+            leading: Icon(Icons.share),
+            title: Text('Rentcars'),
+            onTap: () {}, // Implement functionality
           ),
         ],
       ),

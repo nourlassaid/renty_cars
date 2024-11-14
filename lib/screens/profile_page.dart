@@ -38,7 +38,7 @@ class ProfilePage extends StatelessWidget {
             SizedBox(height: 20),
             ToggleButtons(
               borderColor: Colors.grey,
-              selectedBorderColor: Colors.orange,
+              selectedBorderColor: Colors.blue,
               borderRadius: BorderRadius.circular(20),
               children: [
                 Padding(
