@@ -9,37 +9,33 @@ class AppDrawer extends StatelessWidget {
         children: [
           DrawerHeader(
             decoration: BoxDecoration(color: Colors.white),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                CircleAvatar(
-                  backgroundColor: Colors.blue,
-                  radius: 30,
-                  child: Icon(Icons.person, size: 40, color: Colors.white),
-                ),
-                SizedBox(height: 8),
-                Text(
-                  'Créer un compte',
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.black),
-                ),
-                GestureDetector(
-                  onTap: () {
-                    Navigator.pushNamed(context, '/login');
-                  },
-                  child: Text(
-                    'ou se connecter',
-                    style: TextStyle(fontSize: 14, color: Colors.blue),
+            child: Center( // Center the content inside the DrawerHeader
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center, // Center the column vertically
+                crossAxisAlignment: CrossAxisAlignment.center, // Center the column horizontally
+                children: [
+                  CircleAvatar(
+                    backgroundColor: Colors.blue,
+                    radius: 30,
+                    child: Icon(Icons.person, size: 40, color: Colors.white),
                   ),
-                ),
-                SizedBox(height: 8),
-                Row(
-                  children: [
-                 
-                    SizedBox(width: 8),
-                    
-                  ],
-                ),
-              ],
+                  SizedBox(height: 8),
+                  Text(
+                    'Créer un compte',
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.black),
+                  ),
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.pushNamed(context, '/login');
+                    },
+                    child: Text(
+                      'ou se connecter',
+                      style: TextStyle(fontSize: 14, color: Colors.blue),
+                    ),
+                  ),
+                  SizedBox(height: 8),
+                ],
+              ),
             ),
           ),
           ListTile(

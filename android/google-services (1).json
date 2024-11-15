@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "586390612591",
+    "project_id": "renty2nour",
+    "storage_bucket": "renty2nour.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:586390612591:android:7fed672aa9e4f2df85bb9a",
+        "android_client_info": {
+          "package_name": "com.example.rentycars_nour"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAyIPvr6Bu5oKJdVA92_uRp5rbMPhCt6aE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

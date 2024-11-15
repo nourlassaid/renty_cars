@@ -1,7 +1,54 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:rentycars_nour/screens/create_account_page.dart';
+import 'package:rentycars_nour/services/api.dart';
+import 'home_page.dart';
 
-class LoginPage extends StatelessWidget {
+class LoginPage extends StatefulWidget {
+  @override
+  _LoginPageState createState() => _LoginPageState();
+}
+
+class _LoginPageState extends State<LoginPage> {
+   final TextEditingController emailController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
+  final ApiServices apiServices = ApiServices(); // Create an instance of ApiServices
+
+  CollectionReference users = FirebaseFirestore.instance.collection('users');
+
+  Future<void> login(BuildContext context) async {
+    try {
+      QuerySnapshot querySnapshot = await users
+          .where('email', isEqualTo: emailController.text)
+          .where('password', isEqualTo: passwordController.text)
+          .get();
+
+      if (querySnapshot.docs.isNotEmpty) {
+        // User found
+        var userData = querySnapshot.docs.first.data() as Map<String, dynamic>;
+        String userId = querySnapshot.docs.first.id; // Get the user ID
+        Navigator.of(context).pushReplacement(
+          MaterialPageRoute(
+           // builder: (context) => PersonalDataPage(userId: userId, userData: userData),
+            builder: (context) => RentCarsHomePage(),
+          ),
+        );
+        ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('User successfully logged in')));
+      } else {
+        // User not found
+        ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Invalid email or password')));
+      }
+    } catch (error) {
+      print("Failed to log in user: $error");
+      ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Failed to log in user: $error')));
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -14,7 +61,6 @@ class LoginPage extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Tabs for 'Se connecter avec' and 'Créer un compte'
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -38,18 +84,16 @@ class LoginPage extends StatelessWidget {
             ),
             Divider(color: Colors.blue, thickness: 2),
             SizedBox(height: 20),
-            
-            // Email field
             TextField(
+              controller: emailController,
               decoration: InputDecoration(
                 labelText: 'E-mail',
                 border: OutlineInputBorder(),
               ),
             ),
             SizedBox(height: 16),
-            
-            // Password field with visibility icon
             TextField(
+              controller: passwordController,
               obscureText: true,
               decoration: InputDecoration(
                 labelText: 'Mot de passe',
@@ -58,20 +102,14 @@ class LoginPage extends StatelessWidget {
               ),
             ),
             SizedBox(height: 16),
-            
-            // Login button
             ElevatedButton(
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.blue,
-                minimumSize: Size(double.infinity, 50), // Full-width button
+                minimumSize: Size(double.infinity, 50),
               ),
-              onPressed: () {
-                // Handle login
-              },
+              onPressed: () => login(context),
               child: Text('Connexion'),
             ),
-            
-            // Forgot password link
             Align(
               alignment: Alignment.centerLeft,
               child: TextButton(
@@ -82,8 +120,6 @@ class LoginPage extends StatelessWidget {
               ),
             ),
             SizedBox(height: 20),
-            
-            // Google sign-in button
             ElevatedButton.icon(
               icon: Icon(FontAwesomeIcons.google),
               label: Text("Connectez-vous avec Google"),
@@ -97,10 +133,7 @@ class LoginPage extends StatelessWidget {
                 side: BorderSide(color: Colors.grey),
               ),
             ),
-            
             SizedBox(height: 20),
-            
-            // Privacy policy note
             Text(
               "En vous connectant, vous acceptez la Politique de confidentialité de Rentcars",
               style: TextStyle(color: Colors.grey),

@@ -1,18 +1,24 @@
-// TODO Implement this library.import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+
 class ProfilePage extends StatelessWidget {
+  final User? user = FirebaseAuth.instance.currentUser; // Utilisateur actuel
+
+  void logout(BuildContext context) async {
+    await FirebaseAuth.instance.signOut(); // Déconnexion
+    Navigator.pushNamedAndRemoveUntil(context, '/login', (route) => false);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Profile'),
+        title: Text('Profil'),
         centerTitle: true,
         actions: [
           IconButton(
-            icon: Icon(Icons.settings),
-            onPressed: () {
-              // Settings action
-            },
+            icon: Icon(Icons.logout),
+            onPressed: () => logout(context), // Action pour déconnexion
           ),
         ],
       ),
@@ -20,22 +26,27 @@ class ProfilePage extends StatelessWidget {
         padding: const EdgeInsets.all(16.0),
         child: Column(
           children: [
+            // Avatar de profil
             CircleAvatar(
               radius: 50,
-              backgroundImage: NetworkImage(
-                'https://example.com/your-profile-picture.jpg', // replace with actual profile image URL or asset
-              ),
+              backgroundImage: user?.photoURL != null
+                  ? NetworkImage(user!.photoURL!)
+                  : AssetImage('assets/default_avatar.png') as ImageProvider,
             ),
             SizedBox(height: 10),
+            // Nom d'utilisateur
             Text(
-              'Nour lassaid', // replace with user name
+              user?.displayName ?? 'Utilisateur',
               style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
             ),
+            // Email de l'utilisateur
             Text(
-              'nefta', // replace with user location
+              user?.email ?? 'Email inconnu',
               style: TextStyle(color: Colors.grey),
             ),
             SizedBox(height: 20),
+
+            // Toggle Buttons
             ToggleButtons(
               borderColor: Colors.grey,
               selectedBorderColor: Colors.blue,
@@ -43,41 +54,55 @@ class ProfilePage extends StatelessWidget {
               children: [
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 20),
-                  child: Text('My Cars'),
+                  child: Text('Mes voitures'),
                 ),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 20),
-                  child: Text('Bookings'),
+                  child: Text('Réservations'),
                 ),
               ],
-              isSelected: [true, false], // Default selection
+              isSelected: [true, false], // Sélection par défaut
               onPressed: (int index) {
-                // Toggle button functionality
+                // Fonctionnalité des boutons toggle
               },
             ),
             SizedBox(height: 20),
+
+            // Liste des options
             Expanded(
               child: ListView(
                 children: [
                   _buildProfileOption(
                     icon: Icons.info_outline,
-                    title: 'Personal info',
-                    subtitle: 'Provide personal details and how we can reach you',
+                    title: 'Infos personnelles',
+                    subtitle: 'Mettez à jour vos informations personnelles',
+                    onTap: () {
+                      // Action pour infos personnelles
+                    },
                   ),
                   _buildProfileOption(
                     icon: Icons.car_rental,
-                    title: 'List Your Car',
-                    subtitle: 'List your car for rent and start earning',
+                    title: 'Lister ma voiture',
+                    subtitle: 'Ajoutez votre voiture à la location',
+                    onTap: () {
+                      // Action pour lister une voiture
+                    },
                   ),
                   _buildProfileOption(
                     icon: Icons.verified_user_outlined,
-                    title: 'Verify your account',
-                    subtitle: 'Verify your identity for better trust',
+                    title: 'Vérifier mon compte',
+                    subtitle: 'Renforcez la confiance en vérifiant votre identité',
+                    onTap: () {
+                      // Action pour vérification
+                    },
                   ),
                   _buildProfileOption(
                     icon: Icons.campaign_outlined,
-                    title: 'Promote your car',
-                    subtitle: 'Boost your car listing to reach more renters',
+                    title: 'Promouvoir ma voiture',
+                    subtitle: 'Améliorez la visibilité de votre voiture',
+                    onTap: () {
+                      // Action pour promouvoir une voiture
+                    },
                   ),
                 ],
               ),
@@ -86,9 +111,13 @@ class ProfilePage extends StatelessWidget {
         ),
       ),
       bottomNavigationBar: BottomNavigationBar(
-        currentIndex: 4, // Profile tab index
+        currentIndex: 4, // Onglet actif
         onTap: (index) {
-          // Handle navigation to different pages
+          // Navigation entre les pages
+          if (index == 0) Navigator.pushNamed(context, '/');
+          if (index == 1) Navigator.pushNamed(context, '/search');
+          if (index == 2) Navigator.pushNamed(context, '/favorites');
+          if (index == 3) Navigator.pushNamed(context, '/notifications');
         },
         items: [
           BottomNavigationBarItem(icon: Icon(Icons.home), label: ''),
@@ -101,7 +130,12 @@ class ProfilePage extends StatelessWidget {
     );
   }
 
-  Widget _buildProfileOption({required IconData icon, required String title, required String subtitle}) {
+  Widget _buildProfileOption({
+    required IconData icon,
+    required String title,
+    required String subtitle,
+    required VoidCallback onTap,
+  }) {
     return Card(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
       elevation: 2,
@@ -110,9 +144,7 @@ class ProfilePage extends StatelessWidget {
         leading: Icon(icon, size: 30),
         title: Text(title, style: TextStyle(fontWeight: FontWeight.bold)),
         subtitle: Text(subtitle),
-        onTap: () {
-          // Add navigation or actions here
-        },
+        onTap: onTap,
       ),
     );
   }
