@@ -8,6 +8,11 @@ import 'package:rentycars_nour/screens/create_account_page.dart';
 import 'package:rentycars_nour/splash_screen.dart';
 import 'package:rentycars_nour/splash_screen.dart';  // Import the splash screen
 import 'package:rentycars_nour/screens/ReservationFormPage.dart';
+import 'package:rentycars_nour/screens/ReservationHistoryPage.dart';
+import 'package:rentycars_nour/screens/SearchHistoryPage.dart';
+import 'package:rentycars_nour/screens/settings_page.dart'; // Import SettingsPage
+
+
 
 
 void main() async {
@@ -45,6 +50,11 @@ class MyApp extends StatelessWidget {
         '/login': (context) => LoginPage(),  // Login Page
         '/create_account': (context) => CreateAccountPage(),  // Create Account Page
         '/reservations': (context) => ReservationsPage(),  // Reservations Page
+         '/reservation_form': (context) => ReservationFormPage(),
+          '/reservation_history': (context) => ReservationHistoryPage(),
+        '/search_history': (context) => SearchHistoryPage(),
+                '/settings': (context) => SettingsPage(), // Settings page route
+
       },
     );
   }

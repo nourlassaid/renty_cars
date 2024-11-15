@@ -1,3 +1,5 @@
+import 'dart:convert';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import '../widgets/app_drawer.dart';
@@ -5,6 +7,8 @@ import '../widgets/category_tab.dart';
 import '../widgets/car_card.dart';
 import 'car_detail_page.dart';
 import 'favorites_page.dart';
+import 'profile_page.dart'; // Import ProfilePage
+import 'package:http/http.dart' as http;
 
 class RentCarsHomePage extends StatefulWidget {
   @override
@@ -58,10 +62,51 @@ class _RentCarsHomePageState extends State<RentCarsHomePage> {
     });
   }
 
+  // Function for Firebase search (example)
+  Future<List<Map<String, dynamic>>> searchCarsFromFirebase(String query) async {
+    final snapshot = await FirebaseFirestore.instance
+        .collection('cars')
+        .where('model', isGreaterThanOrEqualTo: query)
+        .where('model', isLessThanOrEqualTo: query + '\uf8ff')
+        .get();
+
+    return snapshot.docs.map((doc) => doc.data()).toList();
+  }
+
+  // Function for search with external API (example API Placeholder)
+  Future<List<Map<String, dynamic>>> searchCarsFromAPI(String query) async {
+    final response = await http.get(Uri.parse('https://jsonplaceholder.typicode.com/posts'));
+    if (response.statusCode == 200) {
+      final data = json.decode(response.body);
+      return (data as List)
+          .where((item) => item['title'].toLowerCase().contains(query.toLowerCase()))
+          .map((item) => {
+                'model': item['title'],
+                'description': item['body'],
+              })
+          .toList();
+    } else {
+      throw Exception('Failed to fetch data from API');
+    }
+  }
+
+  // Update the onItemTapped to navigate to ProfilePage
   void _onItemTapped(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
+    if (index == 3) {  // Favorites
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => FavoritesPage()),
+      );
+    } else if (index == 4) {  // Profile
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => ProfilePage()), // Navigate to ProfilePage
+      );
+    } else {
+      setState(() {
+        _selectedIndex = index;
+      });
+    }
   }
 
   @override
@@ -76,7 +121,7 @@ class _RentCarsHomePageState extends State<RentCarsHomePage> {
             style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, fontFamily: 'Roboto'),
             children: [
               TextSpan(text: 'Rent', style: TextStyle(color: Colors.black)),
-              TextSpan(text: 'Cars', style: TextStyle(color: Colors.blue,)),
+              TextSpan(text: 'Cars', style: TextStyle(color: Colors.blue)),
             ],
           ),
         ),
@@ -183,7 +228,7 @@ class _RentCarsHomePageState extends State<RentCarsHomePage> {
                           ),
                         ),
                       );
-                    },
+                    }, onFavoriteTap: () {  },
                   );
                 }).toList(),
               ),
@@ -195,28 +240,28 @@ class _RentCarsHomePageState extends State<RentCarsHomePage> {
         currentIndex: _selectedIndex,
         onTap: _onItemTapped,
         type: BottomNavigationBarType.fixed,
-        selectedItemColor: Colors.blue, 
-        unselectedItemColor: Colors.grey, 
+        selectedItemColor: Colors.blue,
+        unselectedItemColor: Colors.grey,
         items: [
           BottomNavigationBarItem(
-            icon: Icon(Icons.map), 
-            label: 'Map',  // Label for the first icon
+            icon: Icon(Icons.map),
+            label: 'Map',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.swap_horiz), 
-            label: 'Swap',  // Label for the second icon
+            icon: Icon(Icons.swap_horiz),
+            label: 'Swap',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.calendar_today), 
-            label: 'Calendar',  // Label for the third icon
+            icon: Icon(Icons.calendar_today),
+            label: 'Calendar',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.favorite), 
-            label: 'Favorites',  // Label for the fourth icon
+            icon: Icon(Icons.favorite),
+            label: 'Favorites',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.account_circle), 
-            label: 'Profile',  // Label for the fifth icon
+            icon: Icon(Icons.account_circle),
+            label: 'Profile', // Profile item in BottomNavigationBar
           ),
         ],
       ),

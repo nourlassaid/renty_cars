@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:rentycars_nour/screens/home_page.dart'; // Import your home page
 
 class SplashScreen extends StatefulWidget {
@@ -13,7 +12,7 @@ class _SplashScreenState extends State<SplashScreen> {
     super.initState();
     // Navigate to the Home Page after a delay
     Future.delayed(Duration(seconds: 3), () {
-      Navigator.pushReplacementNamed(context, '/');
+      Navigator.pushReplacementNamed(context, '/'); // Navigate to the HomePage
     });
   }
 
@@ -26,11 +25,16 @@ class _SplashScreenState extends State<SplashScreen> {
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            // You can replace this with your app logo
+            // Replace this with your custom logo
             CircleAvatar(
               backgroundColor: Colors.white,
-              radius: 40,
-              child: Icon(Icons.car_repair, size: 40, color: Colors.blue), // Your logo or icon here
+              radius: 50,
+              child: Image.asset(
+                'assets/images/1.jpg', // Path to your logo image
+                width: 60, // Adjust the size as needed
+                height: 60,
+                fit: BoxFit.cover,
+              ),
             ),
             SizedBox(height: 20),
             Text(

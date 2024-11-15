@@ -43,10 +43,12 @@ class AppDrawer extends StatelessWidget {
             title: Text('Notifications'),
             onTap: () {}, // Implement functionality
           ),
-          ListTile(
+         ListTile(
             leading: Icon(Icons.home),
             title: Text('Réserver une voiture', style: TextStyle(color: Colors.blue)),
-            onTap: () {}, // Implement functionality
+            onTap: () {
+              Navigator.pushNamed(context, '/reservation_form'); // Navigate to Reservation Form
+            },
           ),
           ListTile(
             leading: Icon(Icons.list_alt),
@@ -66,20 +68,32 @@ class AppDrawer extends StatelessWidget {
             onTap: () {}, // Implement functionality
           ),
           ListTile(
-            leading: Icon(Icons.history),
-            title: Text('Historique de recherche'),
-            onTap: () {}, // Implement functionality
-          ),
+  leading: Icon(Icons.history),
+  title: Text('Historique de recherche'),
+  onTap: () {
+    Navigator.pushNamed(context, '/search_history');  // Navigate to Search History page
+  },
+),
+ListTile(
+  leading: Icon(Icons.list_alt),
+  title: Text('Mes Réservations'),
+  onTap: () {
+    Navigator.pushNamed(context, '/reservation_history');  // Navigate to Reservation History page
+  },
+),
           ListTile(
             leading: Icon(Icons.local_offer),
             title: Text('Offres'),
             onTap: () {}, // Implement functionality
           ),
-          ListTile(
-            leading: Icon(Icons.settings),
-            title: Text('Paramètres'),
-            onTap: () {}, // Implement functionality
-          ),
+         ListTile(
+  leading: Icon(Icons.settings),
+  title: Text('Paramètres'),
+  onTap: () {
+    Navigator.pushNamed(context, '/settings'); // Navigate to the Settings Page
+  },
+),
+
           ListTile(
             leading: Icon(Icons.lock),
             title: Text('Politique de confidentialité'),
