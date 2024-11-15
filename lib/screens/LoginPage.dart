@@ -108,6 +108,7 @@ class _LoginPageState extends State<LoginPage> {
                 minimumSize: Size(double.infinity, 50),
               ),
               onPressed: () => login(context),
+              
               child: Text('Connexion'),
             ),
             Align(

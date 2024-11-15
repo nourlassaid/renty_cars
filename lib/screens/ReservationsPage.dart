@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 class ReservationsPage extends StatefulWidget {
@@ -24,7 +25,10 @@ class _ReservationsPageState extends State<ReservationsPage> with SingleTickerPr
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Car Reservations', style: TextStyle(color: Colors.black)),
+        title: Text(
+          'Car Reservations',
+          style: TextStyle(color: Colors.black),
+        ),
         backgroundColor: Colors.white,
         centerTitle: true,
         bottom: TabBar(
@@ -42,36 +46,45 @@ class _ReservationsPageState extends State<ReservationsPage> with SingleTickerPr
       body: TabBarView(
         controller: _tabController,
         children: [
-          _buildReservationList(), // For "Pending" reservations
-          _buildReservationList(), // For "Accepted" reservations
-          _buildReservationList(), // For "Canceled" reservations
+          _buildReservationsList('Pending'), // Tab for "Pending" reservations
+          _buildReservationsList('Accepted'), // Tab for "Accepted" reservations
+          _buildReservationsList('Canceled'), // Tab for "Canceled" reservations
         ],
       ),
     );
   }
 
-  Widget _buildReservationList() {
-    return ListView(
-      padding: EdgeInsets.all(8.0),
-      children: [
-        _buildReservationItem(
-          dateRange: '2024/08/01 - 2024/08/08',
-          carModel: 'Toyota Corolla',
-          location: 'Tunis Center',
-          clientName: 'nour lassaid',
-          price: '70DT per day',
-          imageUrl: 'assets/images/day-exterior-4.png', // Replace with actual car image
-        ),
-        _buildReservationItem(
-          dateRange: '2024/09/01 - 2024/09/15',
-          carModel: 'Mercedes-Benz C-Class',
-          location: 'Sfax Downtown',
-          clientName: 'nour lassaid',
-          price: '150DT per day',
-          imageUrl: 'assets/images/Mercedes-Benz C-Class.jpg', // Replace with actual car image
-        ),
-        // Add more car reservations as needed
-      ],
+  Widget _buildReservationsList(String status) {
+    return StreamBuilder<QuerySnapshot>(
+      stream: FirebaseFirestore.instance
+          .collection('reservations')
+          .where('status', isEqualTo: status)
+          .snapshots(),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return Center(child: CircularProgressIndicator());
+        }
+        if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+          return Center(child: Text('No $status reservations found.'));
+        }
+
+        final reservations = snapshot.data!.docs;
+
+        return ListView.builder(
+          itemCount: reservations.length,
+          itemBuilder: (context, index) {
+            final reservation = reservations[index].data() as Map<String, dynamic>;
+            return _buildReservationItem(
+              dateRange: reservation['reservationDate'] ?? 'Unknown Date',
+              carModel: reservation['carModel'] ?? 'Unknown Model',
+              location: reservation['location'] ?? 'Unknown Location',
+              clientName: reservation['userName'] ?? 'Unknown Client',
+              price: reservation['price'] ?? 'Unknown Price',
+              imageUrl: reservation['imageUrl'] ?? 'assets/images/default_car.png', // Fallback image
+            );
+          },
+        );
+      },
     );
   }
 

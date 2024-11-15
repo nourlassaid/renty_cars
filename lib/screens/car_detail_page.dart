@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import '../screens/LoginPage.dart';  // Adjust import if needed for your file structure
+import '../screens/LoginPage.dart';
+import '../screens/ReservationFormPage.dart';  // Import the ReservationFormPage
 
 class CarDetailPage extends StatelessWidget {
   final String imageUrl;
@@ -162,32 +163,19 @@ class CarDetailPage extends StatelessWidget {
                     '$price per day',
                     style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                   ),
-                  ElevatedButton(
+                 ElevatedButton(
                     onPressed: () {
                       if (!isLoggedIn) {
                         // Navigate to LoginPage if not logged in
+                      //   Navigator.push(
+                      //     context,
+                      //     MaterialPageRoute(builder: (context) => LoginPage()),
+                      //   );
+                      // } else {
+                        // Navigate to the reservation form page after login
                         Navigator.push(
                           context,
-                          MaterialPageRoute(builder: (context) => LoginPage()),
-                        );
-                      } else {
-                        // Show reservation confirmation if logged in
-                        showDialog(
-                          context: context,
-                          builder: (context) {
-                            return AlertDialog(
-                              title: Text('Reservation Confirmed'),
-                              content: Text('You have successfully reserved the $model.'),
-                              actions: [
-                                TextButton(
-                                  onPressed: () {
-                                    Navigator.pop(context);
-                                  },
-                                  child: Text('OK'),
-                                ),
-                              ],
-                            );
-                          },
+                          MaterialPageRoute(builder: (context) => ReservationFormPage()),
                         );
                       }
                     },
