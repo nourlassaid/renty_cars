@@ -26,29 +26,29 @@ class _ReservationsPageState extends State<ReservationsPage> with SingleTickerPr
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          'Car Reservations',
-          style: TextStyle(color: Colors.black),
+          'Réservations de Voitures',
+          style: TextStyle(color: Colors.white),
         ),
-        backgroundColor: Colors.white,
+        backgroundColor: Colors.blue,
         centerTitle: true,
         bottom: TabBar(
           controller: _tabController,
-          labelColor: Colors.blue,
-          unselectedLabelColor: Colors.grey,
-          indicatorColor: Colors.blue,
+          labelColor: Colors.white,
+          unselectedLabelColor: Colors.white70,
+          indicatorColor: Colors.orange,
           tabs: [
-            Tab(text: 'Pending'),
-            Tab(text: 'Accepted'),
-            Tab(text: 'Canceled'),
+            Tab(text: 'En attente'),
+            Tab(text: 'Acceptées'),
+            Tab(text: 'Annulées'),
           ],
         ),
       ),
       body: TabBarView(
         controller: _tabController,
         children: [
-          _buildReservationsList('Pending'), // Tab for "Pending" reservations
-          _buildReservationsList('Accepted'), // Tab for "Accepted" reservations
-          _buildReservationsList('Canceled'), // Tab for "Canceled" reservations
+          _buildReservationsList('En attente'), // Tab "En attente"
+          _buildReservationsList('Acceptée'),   // Tab "Acceptées"
+          _buildReservationsList('Annulée'),    // Tab "Annulées"
         ],
       ),
     );
@@ -65,7 +65,7 @@ class _ReservationsPageState extends State<ReservationsPage> with SingleTickerPr
           return Center(child: CircularProgressIndicator());
         }
         if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-          return Center(child: Text('No $status reservations found.'));
+          return Center(child: Text('Aucune réservation $status.'));
         }
 
         final reservations = snapshot.data!.docs;
@@ -75,12 +75,12 @@ class _ReservationsPageState extends State<ReservationsPage> with SingleTickerPr
           itemBuilder: (context, index) {
             final reservation = reservations[index].data() as Map<String, dynamic>;
             return _buildReservationItem(
-              dateRange: reservation['reservationDate'] ?? 'Unknown Date',
-              carModel: reservation['carModel'] ?? 'Unknown Model',
-              location: reservation['location'] ?? 'Unknown Location',
-              clientName: reservation['userName'] ?? 'Unknown Client',
-              price: reservation['price'] ?? 'Unknown Price',
-              imageUrl: reservation['imageUrl'] ?? 'assets/images/default_car.png', // Fallback image
+              dateRange: reservation['reservationDate'] ?? 'Date inconnue',
+              carModel: reservation['carModel'] ?? 'Modèle inconnu',
+              location: reservation['location'] ?? 'Lieu inconnu',
+              clientName: reservation['userName'] ?? 'Client inconnu',
+              price: reservation['price'] ?? 'Prix inconnu',
+              imageUrl: reservation['imageUrl'] ?? 'assets/images/default_car.png', // Image par défaut
             );
           },
         );
@@ -97,23 +97,39 @@ class _ReservationsPageState extends State<ReservationsPage> with SingleTickerPr
     required String imageUrl,
   }) {
     return Card(
-      margin: EdgeInsets.symmetric(vertical: 8.0),
+      margin: EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+      elevation: 4,
       child: Padding(
         padding: EdgeInsets.all(10.0),
         child: Row(
           children: [
-            Image.asset(imageUrl, width: 60, height: 60, fit: BoxFit.cover),
-            SizedBox(width: 10),
+            ClipRRect(
+              borderRadius: BorderRadius.circular(8),
+              child: Image.asset(
+                imageUrl,
+                width: 80,
+                height: 80,
+                fit: BoxFit.cover,
+              ),
+            ),
+            SizedBox(width: 15),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(dateRange, style: TextStyle(fontWeight: FontWeight.bold)),
+                  Text(
+                    dateRange,
+                    style: TextStyle(fontWeight: FontWeight.bold, color: Colors.blue),
+                  ),
                   SizedBox(height: 5),
-                  Text(carModel, style: TextStyle(fontSize: 16)),
-                  Text('Location: $location', style: TextStyle(color: Colors.grey)),
-                  Text('Client: $clientName', style: TextStyle(color: Colors.grey)),
-                  Text(price, style: TextStyle(color: Colors.grey)),
+                  Text(
+                    carModel,
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+                  ),
+                  Text('Lieu : $location', style: TextStyle(color: Colors.grey)),
+                  Text('Client : $clientName', style: TextStyle(color: Colors.grey)),
+                  Text('Prix : $price', style: TextStyle(color: Colors.orange)),
                 ],
               ),
             ),

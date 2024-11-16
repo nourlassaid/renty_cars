@@ -204,35 +204,49 @@ class _RentCarsHomePageState extends State<RentCarsHomePage> {
               ],
             ),
             SizedBox(height: 16),
-            Expanded(
-              child: ListView(
-                children: filteredCars.map((car) {
-                  return CarCard(
-                    imageUrl: car['imageUrl'],
-                    model: car['model'],
-                    location: car['location'],
-                    price: car['price'],
-                    rating: car['rating'],
-                    type: car['type'],
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => CarDetailPage(
-                            imageUrl: car['imageUrl'],
-                            model: car['model'],
-                            location: car['location'],
-                            price: car['price'],
-                            rating: car['rating'],
-                            type: car['type'],
-                          ),
-                        ),
-                      );
-                    }, onFavoriteTap: () {  },
-                  );
-                }).toList(),
+           Expanded(
+  child: ListView(
+    children: filteredCars.map((car) {
+      return CarCard(
+        imageUrl: car['imageUrl'],
+        model: car['model'],
+        location: car['location'],
+        price: car['price'],
+        rating: car['rating'],
+        type: car['type'],
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => CarDetailPage(
+                imageUrl: car['imageUrl'],
+                model: car['model'],
+                location: car['location'],
+                price: car['price'],
+                rating: car['rating'],
+                type: car['type'],
               ),
             ),
+          );
+        },
+        onFavoriteTap: () {
+          FirebaseFirestore.instance.collection('favorites').add({
+            'imageUrl': car['imageUrl'],
+            'model': car['model'],
+            'location': car['location'],
+            'price': car['price'],
+            'rating': car['rating'],
+            'type': car['type'],
+          });
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('${car['model']} ajouté aux favoris.')),
+          );
+        },
+      );
+    }).toList(),
+  ),
+),
+            
           ],
         ),
       ),

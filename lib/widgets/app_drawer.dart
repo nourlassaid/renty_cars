@@ -57,16 +57,8 @@ class AppDrawer extends StatelessWidget {
               Navigator.pushNamed(context, '/reservations');
             },
           ),
-          ListTile(
-            leading: Icon(Icons.account_balance_wallet),
-            title: Text('Mon portefeuille'),
-            onTap: () {}, // Implement functionality
-          ),
-          ListTile(
-            leading: Icon(Icons.emoji_events),
-            title: Text('RentRewards'),
-            onTap: () {}, // Implement functionality
-          ),
+         
+        
           ListTile(
   leading: Icon(Icons.history),
   title: Text('Historique de recherche'),
@@ -82,11 +74,14 @@ ListTile(
   },
 ),
           ListTile(
-            leading: Icon(Icons.local_offer),
-            title: Text('Offres'),
-            onTap: () {}, // Implement functionality
-          ),
-         ListTile(
+  leading: Icon(Icons.local_offer),
+  title: Text('Offres'),
+  onTap: () {
+    Navigator.pushNamed(context, '/offers'); // Navigate to the Offers Page
+  },
+),
+
+   ListTile(
   leading: Icon(Icons.settings),
   title: Text('Paramètres'),
   onTap: () {
@@ -94,16 +89,8 @@ ListTile(
   },
 ),
 
-          ListTile(
-            leading: Icon(Icons.lock),
-            title: Text('Politique de confidentialité'),
-            onTap: () {}, // Implement functionality
-          ),
-          ListTile(
-            leading: Icon(Icons.check_box),
-            title: Text('Termes et Conditions'),
-            onTap: () {}, // Implement functionality
-          ),
+          
+         
           ListTile(
             leading: Icon(Icons.help),
             title: Text('Centre d\'aide'),

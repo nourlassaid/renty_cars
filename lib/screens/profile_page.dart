@@ -31,18 +31,18 @@ class ProfilePage extends StatelessWidget {
               radius: 50,
               backgroundImage: user?.photoURL != null
                   ? NetworkImage(user!.photoURL!)
-                  : AssetImage('assets/default_avatar.png') as ImageProvider,
+                  : AssetImage('assets/images/default_avatar.jpg') as ImageProvider,
             ),
             SizedBox(height: 10),
             // Nom d'utilisateur
             Text(
-              user?.displayName ?? 'Utilisateur',
+              user?.displayName ?? 'nour lassaid',
               style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
             ),
             // Email de l'utilisateur
             Text(
-              user?.email ?? 'Email inconnu',
-              style: TextStyle(color: Colors.grey),
+              user?.email ?? 'nour@gmail.com',
+              style: TextStyle(color: const Color.fromARGB(255, 255, 253, 253)),
             ),
             SizedBox(height: 20),
 

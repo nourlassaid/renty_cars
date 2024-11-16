@@ -11,6 +11,10 @@ import 'package:rentycars_nour/screens/ReservationFormPage.dart';
 import 'package:rentycars_nour/screens/ReservationHistoryPage.dart';
 import 'package:rentycars_nour/screens/SearchHistoryPage.dart';
 import 'package:rentycars_nour/screens/settings_page.dart'; // Import SettingsPage
+import 'package:rentycars_nour/screens/offerspage.dart'; // Import OffersPage
+import 'screens/ReviewPage.dart';
+
+
 
 
 
@@ -54,6 +58,8 @@ class MyApp extends StatelessWidget {
           '/reservation_history': (context) => ReservationHistoryPage(),
         '/search_history': (context) => SearchHistoryPage(),
                 '/settings': (context) => SettingsPage(), // Settings page route
+                       '/offers': (context) => OffersPage(), // Offers page route
+
 
       },
     );

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../screens/LoginPage.dart';
-import '../screens/ReservationFormPage.dart';  // Import the ReservationFormPage
+import '../screens/ReservationFormPage.dart';  // Importation de la page ReservationFormPage
+import '../screens/ReviewPage.dart';  // Importation de la page des avis
 
 class CarDetailPage extends StatelessWidget {
   final String imageUrl;
@@ -10,8 +11,8 @@ class CarDetailPage extends StatelessWidget {
   final double rating;
   final String type;
 
-  // Simulating login status
-  final bool isLoggedIn = false; // Update based on actual authentication status
+  // Simuler l'état de connexion de l'utilisateur
+  final bool isLoggedIn = false; // Mettez à jour avec l'état réel de l'authentification
 
   const CarDetailPage({
     Key? key,
@@ -32,7 +33,7 @@ class CarDetailPage extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Car image with favorite icon
+                // Image de la voiture avec l'icône des favoris
                 Stack(
                   children: [
                     ClipRRect(
@@ -52,7 +53,7 @@ class CarDetailPage extends StatelessWidget {
                         child: IconButton(
                           icon: Icon(Icons.favorite_border, color: Colors.red),
                           onPressed: () {
-                            // Logic to add to favorites
+                            // Logique pour ajouter aux favoris
                           },
                         ),
                       ),
@@ -76,7 +77,7 @@ class CarDetailPage extends StatelessWidget {
                       SizedBox(height: 8),
                       Row(
                         children: [
-                          Icon(Icons.star, color:Colors.blue),
+                          Icon(Icons.star, color: Colors.blue),
                           SizedBox(width: 4),
                           Text(
                             rating.toString(),
@@ -84,9 +85,10 @@ class CarDetailPage extends StatelessWidget {
                           ),
                           GestureDetector(
                             onTap: () {
+                              // Naviguer vers la page des avis
                               Navigator.push(
                                 context,
-                                MaterialPageRoute(builder: (context) => ReviewPage()),
+                                MaterialPageRoute(builder: (context) => ReviewPage(postId: '',)),
                               );
                             },
                             child: Text(
@@ -163,16 +165,16 @@ class CarDetailPage extends StatelessWidget {
                     '$price per day',
                     style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                   ),
-                 ElevatedButton(
+                  ElevatedButton(
                     onPressed: () {
                       if (!isLoggedIn) {
-                        // Navigate to LoginPage if not logged in
-                      //   Navigator.push(
-                      //     context,
-                      //     MaterialPageRoute(builder: (context) => LoginPage()),
-                      //   );
-                      // } else {
-                        // Navigate to the reservation form page after login
+                        // Naviguer vers la page de connexion si l'utilisateur n'est pas connecté
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => ReservationFormPage()),
+                        );
+                      } else {
+                        // Naviguer vers la page de réservation après la connexion
                         Navigator.push(
                           context,
                           MaterialPageRoute(builder: (context) => ReservationFormPage()),
@@ -190,22 +192,6 @@ class CarDetailPage extends StatelessWidget {
             ),
           ),
         ],
-      ),
-    );
-  }
-}
-
-// Define ReviewPage
-class ReviewPage extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text("Reviews"),
-        backgroundColor: Colors.blue,
-      ),
-      body: Center(
-        child: Text("This is the reviews page"),
       ),
     );
   }
