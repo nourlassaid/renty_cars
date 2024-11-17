@@ -1,18 +1,17 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import '../screens/LoginPage.dart';
-import '../screens/ReservationFormPage.dart';  // Importation de la page ReservationFormPage
-import '../screens/ReviewPage.dart';  // Importation de la page des avis
+import 'package:rentycars_nour/screens/Loginpage.dart';
+import 'package:rentycars_nour/screens/ReservationFormPage.dart';
+import 'package:rentycars_nour/screens/ReviewPage.dart';
 
-class CarDetailPage extends StatelessWidget {
+class CarDetailPage extends StatefulWidget {
   final String imageUrl;
   final String model;
   final String location;
   final String price;
   final double rating;
   final String type;
-
-  // Simuler l'état de connexion de l'utilisateur
-  final bool isLoggedIn = false; // Mettez à jour avec l'état réel de l'authentification
 
   const CarDetailPage({
     Key? key,
@@ -25,6 +24,109 @@ class CarDetailPage extends StatelessWidget {
   }) : super(key: key);
 
   @override
+  _CarDetailPageState createState() => _CarDetailPageState();
+}
+
+class _CarDetailPageState extends State<CarDetailPage> {
+  bool isFavorite = false;  // Etat du favori (ajouté ou non)
+
+  @override
+  void initState() {
+    super.initState();
+    _checkIfFavorite();  // Vérifie si la voiture est déjà marquée comme favorite
+  }
+
+  // Vérifie si la voiture est déjà dans les favoris de l'utilisateur
+  Future<void> _checkIfFavorite() async {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      final carRef = FirebaseFirestore.instance
+          .collection('favorites')
+          .doc(user.uid)
+          .collection('cars')
+          .doc(widget.model);
+
+      final docSnapshot = await carRef.get();
+      if (docSnapshot.exists) {
+        setState(() {
+          isFavorite = true;  // La voiture est déjà dans les favoris
+        });
+      }
+    }
+  }
+
+  // Fonction pour ajouter ou supprimer un favori
+  Future<void> _toggleFavorite() async {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      final carRef = FirebaseFirestore.instance
+          .collection('favorites')
+          .doc(user.uid)
+          .collection('cars')
+          .doc(widget.model);
+
+      if (isFavorite) {
+        await carRef.delete();  // Supprime du favori
+      } else {
+        await carRef.set({
+          'imageUrl': widget.imageUrl,
+          'model': widget.model,
+          'price': widget.price,
+          'location': widget.location,
+          'rating': widget.rating,
+        });
+      }
+
+      setState(() {
+        isFavorite = !isFavorite;  // Met à jour l'état du favori
+      });
+    } else {
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => LoginPage()),  // Redirige vers la page de connexion
+      );
+    }
+  }
+
+  // Fonction pour envoyer un message
+  Future<void> _sendMessage() async {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      final receiverId = 'ownerId'; // Remplacez par l'ID réel du propriétaire
+      await FirebaseFirestore.instance.collection('messages').add({
+        'senderId': user.uid,
+        'receiverId': receiverId,
+        'message': 'Hello, I am interested in this car!',
+        'timestamp': FieldValue.serverTimestamp(),
+      });
+
+      // Affichage de la boîte de dialogue de confirmation
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text('Message Sent'),
+            content: Text('Votre message a été envoyé au propriétaire du véhicule.'),
+            actions: <Widget>[
+              TextButton(
+                onPressed: () {
+                  Navigator.pop(context);  // Fermer la boîte de dialogue
+                },
+                child: Text('OK'),
+              ),
+            ],
+          );
+        },
+      );
+    } else {
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => LoginPage()),  // Redirige vers la page de connexion
+      );
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Stack(
@@ -33,13 +135,12 @@ class CarDetailPage extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Image de la voiture avec l'icône des favoris
                 Stack(
                   children: [
                     ClipRRect(
                       borderRadius: BorderRadius.circular(15),
                       child: Image.asset(
-                        imageUrl,
+                        widget.imageUrl,
                         fit: BoxFit.cover,
                         width: double.infinity,
                         height: 250,
@@ -51,10 +152,11 @@ class CarDetailPage extends StatelessWidget {
                       child: CircleAvatar(
                         backgroundColor: Colors.white,
                         child: IconButton(
-                          icon: Icon(Icons.favorite_border, color: Colors.red),
-                          onPressed: () {
-                            // Logique pour ajouter aux favoris
-                          },
+                          icon: Icon(
+                            isFavorite ? Icons.favorite : Icons.favorite_border, 
+                            color: Colors.red
+                          ),
+                          onPressed: _toggleFavorite,  // Appel à la fonction pour ajouter ou supprimer des favoris
                         ),
                       ),
                     ),
@@ -66,12 +168,12 @@ class CarDetailPage extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        model,
+                        widget.model,
                         style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
                       ),
                       SizedBox(height: 8),
                       Text(
-                        location,
+                        widget.location,
                         style: TextStyle(fontSize: 16, color: Colors.grey),
                       ),
                       SizedBox(height: 8),
@@ -80,12 +182,11 @@ class CarDetailPage extends StatelessWidget {
                           Icon(Icons.star, color: Colors.blue),
                           SizedBox(width: 4),
                           Text(
-                            rating.toString(),
+                            widget.rating.toString(),
                             style: TextStyle(fontSize: 16),
                           ),
                           GestureDetector(
                             onTap: () {
-                              // Naviguer vers la page des avis
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(builder: (context) => ReviewPage(postId: '',)),
@@ -110,14 +211,14 @@ class CarDetailPage extends StatelessWidget {
                           Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text("nour lassaid", style: TextStyle(fontWeight: FontWeight.bold)),
+                              Text("Nour Lassaid", style: TextStyle(fontWeight: FontWeight.bold)),
                               Text("NEW", style: TextStyle(color: Colors.blue)),
                             ],
                           ),
                           Spacer(),
                           IconButton(
                             icon: Icon(Icons.chat, color: Colors.blue),
-                            onPressed: () {},
+                            onPressed: _sendMessage,  // Envoie un message
                           ),
                           IconButton(
                             icon: Icon(Icons.phone, color: Colors.blue),
@@ -162,24 +263,15 @@ class CarDetailPage extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    '$price per day',
+                    '${widget.price} per day',
                     style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                   ),
                   ElevatedButton(
                     onPressed: () {
-                      if (!isLoggedIn) {
-                        // Naviguer vers la page de connexion si l'utilisateur n'est pas connecté
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) => ReservationFormPage()),
-                        );
-                      } else {
-                        // Naviguer vers la page de réservation après la connexion
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) => ReservationFormPage()),
-                        );
-                      }
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => ReservationFormPage()),
+                      );
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.blue,

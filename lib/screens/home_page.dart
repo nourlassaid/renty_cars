@@ -62,7 +62,7 @@ class _RentCarsHomePageState extends State<RentCarsHomePage> {
     });
   }
 
-  // Function for Firebase search (example)
+  // Firebase search function (example)
   Future<List<Map<String, dynamic>>> searchCarsFromFirebase(String query) async {
     final snapshot = await FirebaseFirestore.instance
         .collection('cars')
@@ -73,7 +73,7 @@ class _RentCarsHomePageState extends State<RentCarsHomePage> {
     return snapshot.docs.map((doc) => doc.data()).toList();
   }
 
-  // Function for search with external API (example API Placeholder)
+  // External API search function (example API placeholder)
   Future<List<Map<String, dynamic>>> searchCarsFromAPI(String query) async {
     final response = await http.get(Uri.parse('https://jsonplaceholder.typicode.com/posts'));
     if (response.statusCode == 200) {
@@ -90,7 +90,7 @@ class _RentCarsHomePageState extends State<RentCarsHomePage> {
     }
   }
 
-  // Update the onItemTapped to navigate to ProfilePage
+  // Update the onItemTapped function to navigate to ProfilePage
   void _onItemTapped(int index) {
     if (index == 3) {  // Favorites
       Navigator.push(
@@ -112,27 +112,32 @@ class _RentCarsHomePageState extends State<RentCarsHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.white,
-        elevation: 2,
-        centerTitle: true,
-         title: RichText(
+     appBar: AppBar(
+  backgroundColor: Colors.white,
+  elevation: 2,
+  centerTitle: true,
+  title: RichText(
     text: TextSpan(
-      style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, fontFamily: 'Roboto'),
+      style: TextStyle(
+        fontSize: 24, // Définir la taille de la police ici
+        fontWeight: FontWeight.bold,
+        fontFamily: 'Roboto', // Définir la famille de la police ici
+        color: Colors.black, // Couleur du texte
+      ),
       children: [
         TextSpan(text: 'Rent', style: TextStyle(color: Colors.black)),
         TextSpan(text: 'Cars', style: TextStyle(color: Colors.blue)),
       ],
     ),
   ),
-        leading: Builder(
-          builder: (context) => IconButton(
-            icon: Icon(Icons.menu, color: Colors.black),
-            onPressed: () {
-              Scaffold.of(context).openDrawer();
-            },
-          ),
-        ),
+  leading: Builder(
+    builder: (context) => IconButton(
+      icon: Icon(Icons.menu, color: Colors.black),
+      onPressed: () {
+        Scaffold.of(context).openDrawer();
+      },
+    ),
+  ),
         actions: [
           IconButton(
             icon: Icon(Icons.notifications, color: Colors.black),
@@ -140,7 +145,6 @@ class _RentCarsHomePageState extends State<RentCarsHomePage> {
               // Handle notifications icon tap here
             },
           ),
-          
         ],
       ),
       drawer: AppDrawer(),
@@ -205,49 +209,48 @@ class _RentCarsHomePageState extends State<RentCarsHomePage> {
               ],
             ),
             SizedBox(height: 16),
-           Expanded(
-  child: ListView(
-    children: filteredCars.map((car) {
-      return CarCard(
-        imageUrl: car['imageUrl'],
-        model: car['model'],
-        location: car['location'],
-        price: car['price'],
-        rating: car['rating'],
-        type: car['type'],
-        onTap: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => CarDetailPage(
-                imageUrl: car['imageUrl'],
-                model: car['model'],
-                location: car['location'],
-                price: car['price'],
-                rating: car['rating'],
-                type: car['type'],
+            Expanded(
+              child: ListView(
+                children: filteredCars.map((car) {
+                  return CarCard(
+                    imageUrl: car['imageUrl'],
+                    model: car['model'],
+                    location: car['location'],
+                    price: car['price'],
+                    rating: car['rating'],
+                    type: car['type'],
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => CarDetailPage(
+                            imageUrl: car['imageUrl'],
+                            model: car['model'],
+                            location: car['location'],
+                            price: car['price'],
+                            rating: car['rating'],
+                            type: car['type'],
+                          ),
+                        ),
+                      );
+                    },
+                    onFavoriteTap: () {
+                      FirebaseFirestore.instance.collection('favorites').add({
+                        'imageUrl': car['imageUrl'],
+                        'model': car['model'],
+                        'location': car['location'],
+                        'price': car['price'],
+                        'rating': car['rating'],
+                        'type': car['type'],
+                      });
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text('${car['model']} added to favorites.')),
+                      );
+                    },
+                  );
+                }).toList(),
               ),
             ),
-          );
-        },
-        onFavoriteTap: () {
-          FirebaseFirestore.instance.collection('favorites').add({
-            'imageUrl': car['imageUrl'],
-            'model': car['model'],
-            'location': car['location'],
-            'price': car['price'],
-            'rating': car['rating'],
-            'type': car['type'],
-          });
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('${car['model']} ajouté aux favoris.')),
-          );
-        },
-      );
-    }).toList(),
-  ),
-),
-            
           ],
         ),
       ),

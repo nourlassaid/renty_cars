@@ -21,6 +21,18 @@ class _ReservationsPageState extends State<ReservationsPage> with SingleTickerPr
     super.dispose();
   }
 
+  // Function to update the status of a reservation
+  Future<void> _updateReservationStatus(String reservationId, String newStatus) async {
+    try {
+      await FirebaseFirestore.instance.collection('reservations').doc(reservationId).update({
+        'status': newStatus,
+      });
+      print('Reservation status updated to $newStatus');
+    } catch (e) {
+      print('Failed to update reservation: $e');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -74,13 +86,17 @@ class _ReservationsPageState extends State<ReservationsPage> with SingleTickerPr
           itemCount: reservations.length,
           itemBuilder: (context, index) {
             final reservation = reservations[index].data() as Map<String, dynamic>;
+            final reservationId = reservations[index].id;
+
             return _buildReservationItem(
+              reservationId: reservationId,
               dateRange: reservation['reservationDate'] ?? 'Date inconnue',
               carModel: reservation['carModel'] ?? 'Modèle inconnu',
               location: reservation['location'] ?? 'Lieu inconnu',
               clientName: reservation['userName'] ?? 'Client inconnu',
               price: reservation['price'] ?? 'Prix inconnu',
               imageUrl: reservation['imageUrl'] ?? 'assets/images/default_car.png', // Image par défaut
+              status: reservation['status'] ?? 'Statut inconnu',
             );
           },
         );
@@ -89,12 +105,14 @@ class _ReservationsPageState extends State<ReservationsPage> with SingleTickerPr
   }
 
   Widget _buildReservationItem({
+    required String reservationId,
     required String dateRange,
     required String carModel,
     required String location,
     required String clientName,
     required String price,
     required String imageUrl,
+    required String status,
   }) {
     return Card(
       margin: EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
@@ -130,6 +148,30 @@ class _ReservationsPageState extends State<ReservationsPage> with SingleTickerPr
                   Text('Lieu : $location', style: TextStyle(color: Colors.grey)),
                   Text('Client : $clientName', style: TextStyle(color: Colors.grey)),
                   Text('Prix : $price', style: TextStyle(color: Colors.orange)),
+                  SizedBox(height: 10),
+                  Row(
+                    children: [
+                      if (status == 'En attente') ...[
+                        ElevatedButton(
+                          onPressed: () => _updateReservationStatus(reservationId, 'Acceptée'),
+                          child: Text('Accepter'),
+                          style: ElevatedButton.styleFrom(backgroundColor: Colors.green),
+                        ),
+                        SizedBox(width: 10),
+                        ElevatedButton(
+                          onPressed: () => _updateReservationStatus(reservationId, 'Annulée'),
+                          child: Text('Annuler'),
+                          style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
+                        ),
+                      ],
+                      if (status == 'Acceptée') ...[
+                        Text('Réservation acceptée', style: TextStyle(color: Colors.green)),
+                      ],
+                      if (status == 'Annulée') ...[
+                        Text('Réservation annulée', style: TextStyle(color: Colors.red)),
+                      ],
+                    ],
+                  ),
                 ],
               ),
             ),

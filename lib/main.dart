@@ -12,6 +12,7 @@ import 'package:rentycars_nour/admin/admin_gestion_agence.dart';
 import 'package:rentycars_nour/admin/admin_dashboard.dart';
 import 'package:rentycars_nour/screens/ReservationsPage.dart';
 import 'package:rentycars_nour/screens/home_page.dart';
+import 'package:rentycars_nour/screens/payment_choice_page.dart';
 import 'package:rentycars_nour/screens/profile_page.dart';
 import 'package:rentycars_nour/screens/loginpage.dart';
 import 'package:rentycars_nour/screens/create_account_page.dart';
@@ -22,6 +23,7 @@ import 'package:rentycars_nour/screens/SearchHistoryPage.dart';
 import 'package:rentycars_nour/screens/settings_page.dart'; // Settings page
 import 'package:rentycars_nour/screens/offerspage.dart'; // Offers page
 import 'screens/ReviewPage.dart';
+import 'package:rentycars_nour/screens/payment_choice_page.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -72,6 +74,14 @@ class MyApp extends StatelessWidget {
         '/admin_reservation_management': (context) => AdminReservationManagementPage(),  // Gestion des réservations
         '/block_user': (context) => BlockUserPage(),  // Bloquer un utilisateur
         '/modify_reservation': (context) => ModifyReservationPage(),  // Modifier une réservation
+               '/payment': (context) => PaymentChoicePage(
+  onPaymentConfirmed: () {
+    // Logique lorsque le paiement est confirmé
+    print("Le paiement a été confirmé!");
+    // Vous pouvez également naviguer vers une autre page ou afficher un message ici
+  },
+),
+
       },
     );
     

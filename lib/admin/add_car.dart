@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:http/http.dart' as http;
-import 'dart:convert';
 
 class AddCarPage extends StatefulWidget {
   @override
@@ -18,40 +16,19 @@ class _AddCarPageState extends State<AddCarPage> {
   final _imageUrlController = TextEditingController();
   bool _isAvailable = true;
 
-  // List to store image URLs
-  List<String> _imageUrls = [];
-
-  // Function to fetch images from JSONPlaceholder API
-  Future<void> _fetchImages() async {
-    try {
-      final response = await http.get(Uri.parse('https://jsonplaceholder.typicode.com/photos'));
-
-      if (response.statusCode == 200) {
-        List data = json.decode(response.body);
-        setState(() {
-          _imageUrls = data.map((item) => item['url'] as String).toList();
-        });
-      } else {
-        throw Exception('Failed to load images');
-      }
-    } catch (e) {
-      print("Error: $e");
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Erreur de chargement des images')));
-    }
-  }
-
-  // Function to add the car data
+  // Fonction pour ajouter la voiture
   void _addCar() async {
     if (_formKey.currentState!.validate()) {
       try {
         String imageUrl = _imageUrlController.text;
 
+        // Vérification de l'URL de l'image
         if (imageUrl.isEmpty) {
           ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Veuillez entrer une URL valide pour l\'image.')));
           return;
         }
 
-        // Add car data to Firestore
+        // Ajout des données de la voiture dans Firestore
         FirebaseFirestore.instance.collection('cars').add({
           'model': _modelController.text,
           'brand': _brandController.text,
@@ -59,10 +36,10 @@ class _AddCarPageState extends State<AddCarPage> {
           'type': _typeController.text,
           'color': _colorController.text,
           'availability': _isAvailable,
-          'imageUrl': imageUrl,
+          'imageUrl': imageUrl, // URL de l'image
         }).then((value) {
           ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Voiture ajoutée avec succès')));
-          Navigator.pop(context);
+          Navigator.pop(context); // Fermer la page d'ajout
         }).catchError((error) {
           ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Erreur lors de l\'ajout: $error')));
         });
@@ -70,12 +47,6 @@ class _AddCarPageState extends State<AddCarPage> {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Erreur: $e')));
       }
     }
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    _fetchImages(); // Fetch images on initialization
   }
 
   @override
@@ -97,24 +68,38 @@ class _AddCarPageState extends State<AddCarPage> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // Image selection from the fetched URLs
-                  _buildDropdownField(),
+                  // Champ de l'URL de l'image
+                  _buildTextFormField(
+                    controller: _imageUrlController,
+                    labelText: 'URL de l\'image',
+                    icon: Icons.image,
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Veuillez entrer une URL de l\'image';
+                      }
+                      Uri? uri = Uri.tryParse(value);
+                      if (uri == null || !uri.isAbsolute) {
+                        return 'Veuillez entrer une URL valide';
+                      }
+                      return null;
+                    },
+                  ),
                   SizedBox(height: 10),
-                  // Model input
+                  // Champ de modèle
                   _buildTextFormField(
                     controller: _modelController,
                     labelText: 'Modèle',
                     icon: Icons.directions_car,
                     validator: (value) => value!.isEmpty ? 'Veuillez entrer le modèle' : null,
                   ),
-                  // Brand input
+                  // Champ de marque
                   _buildTextFormField(
                     controller: _brandController,
                     labelText: 'Marque',
                     icon: Icons.branding_watermark,
                     validator: (value) => value!.isEmpty ? 'Veuillez entrer la marque' : null,
                   ),
-                  // Price input
+                  // Champ de prix
                   _buildTextFormField(
                     controller: _priceController,
                     labelText: 'Prix par jour',
@@ -122,21 +107,21 @@ class _AddCarPageState extends State<AddCarPage> {
                     keyboardType: TextInputType.number,
                     validator: (value) => value!.isEmpty ? 'Veuillez entrer le prix' : null,
                   ),
-                  // Type of car input
+                  // Champ de type de voiture
                   _buildTextFormField(
                     controller: _typeController,
                     labelText: 'Type de voiture',
                     icon: Icons.car_repair,
                     validator: (value) => value!.isEmpty ? 'Veuillez entrer le type de voiture' : null,
                   ),
-                  // Color input
+                  // Champ de couleur
                   _buildTextFormField(
                     controller: _colorController,
                     labelText: 'Couleur',
                     icon: Icons.color_lens,
                     validator: (value) => value!.isEmpty ? 'Veuillez entrer la couleur' : null,
                   ),
-                  // Availability checkbox
+                  // Disponibilité de la voiture
                   Row(
                     children: [
                       Text('Disponible:', style: TextStyle(fontSize: 16, color: Colors.black)),
@@ -151,13 +136,13 @@ class _AddCarPageState extends State<AddCarPage> {
                     ],
                   ),
                   SizedBox(height: 20),
-                  // Add button
+                  // Bouton d'ajout centré et stylisé
                   Center(
                     child: ElevatedButton(
                       onPressed: _addCar,
                       child: Text('Ajouter', style: TextStyle(fontSize: 18, color: Colors.black)),
                       style: ElevatedButton.styleFrom(
-                        padding: EdgeInsets.symmetric(vertical: 15),
+                        padding: EdgeInsets.symmetric(vertical: 30.30),
                         backgroundColor: const Color.fromARGB(255, 255, 255, 255),
                         elevation: 5,
                         shape: RoundedRectangleBorder(
@@ -176,38 +161,7 @@ class _AddCarPageState extends State<AddCarPage> {
     );
   }
 
-  // Dropdown to select image URL
-  Widget _buildDropdownField() {
-    return DropdownButtonFormField<String>(
-      value: _imageUrls.isNotEmpty ? _imageUrls[0] : null,
-      decoration: InputDecoration(
-        labelText: 'Choisir une image',
-        labelStyle: TextStyle(color: Colors.black),
-        prefixIcon: Icon(Icons.image, color: Colors.blueAccent),
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide(color: Colors.blueAccent, width: 1),
-        ),
-        focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide(color: Colors.blueAccent, width: 2),
-        ),
-      ),
-      onChanged: (String? newValue) {
-        setState(() {
-          _imageUrlController.text = newValue!;
-        });
-      },
-      items: _imageUrls.map((String url) {
-        return DropdownMenuItem<String>(
-          value: url,
-          child: Text('Image URL'),
-        );
-      }).toList(),
-    );
-  }
-
-  // Function to create the text form fields
+  // Fonction de construction du champ de texte
   Widget _buildTextFormField({
     required TextEditingController controller,
     required String labelText,
@@ -219,7 +173,7 @@ class _AddCarPageState extends State<AddCarPage> {
       controller: controller,
       decoration: InputDecoration(
         labelText: labelText,
-        labelStyle: TextStyle(color: Colors.black),
+        labelStyle: TextStyle(color: Colors.black), // Text couleur noire
         prefixIcon: Icon(icon, color: Colors.blueAccent),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),

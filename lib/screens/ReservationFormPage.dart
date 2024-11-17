@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'payment_choice_page.dart'; // Assurez-vous d'importer la page de choix de paiement
 
 class ReservationFormPage extends StatefulWidget {
   @override
@@ -13,12 +14,13 @@ class _ReservationFormPageState extends State<ReservationFormPage> {
   DateTime selectedDate = DateTime.now();
   String userName = '';
   String userPhone = '';
-
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
+  // Soumettre la réservation
   Future<void> submitReservation() async {
     if (_formKey.currentState!.validate()) {
       try {
+        // Ajouter la réservation dans Firestore
         await _firestore.collection('reservations').add({
           'carModel': carModel,
           'location': location,
@@ -28,6 +30,7 @@ class _ReservationFormPageState extends State<ReservationFormPage> {
           'status': 'En attente', // Statut par défaut
         });
 
+        // Afficher un dialogue de succès
         showDialog(
           context: context,
           builder: (context) {
@@ -50,6 +53,38 @@ class _ReservationFormPageState extends State<ReservationFormPage> {
         print('Erreur lors de la soumission de la réservation : $e');
       }
     }
+  }
+
+  // Fonction de traitement de paiement (simulation)
+  Future<void> processPayment() async {
+    // Naviguer vers la page de choix de paiement
+    await Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => PaymentChoicePage(
+          onPaymentConfirmed: () {
+            // Simuler le succès du paiement
+            showDialog(
+              context: context,
+              builder: (context) {
+                return AlertDialog(
+                  title: Text('Paiement réussi'),
+                  content: Text('Votre paiement a été effectué avec succès !'),
+                  actions: [
+                    TextButton(
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                      child: Text('OK'),
+                    ),
+                  ],
+                );
+              },
+            );
+          },
+        ),
+      ),
+    );
   }
 
   @override
@@ -151,17 +186,18 @@ class _ReservationFormPageState extends State<ReservationFormPage> {
                   style: TextStyle(fontSize: 16),
                 ),
               ),
-              SizedBox(height: 10),
+              SizedBox(height: 20),
               ElevatedButton(
-                onPressed: () {
-                  Navigator.pushNamed(context, '/reservations');
+                onPressed: () async {
+                  // Processus de paiement
+                  await processPayment();
                 },
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.grey,
+                  backgroundColor: Colors.green,
                   padding: EdgeInsets.symmetric(vertical: 15),
                 ),
                 child: Text(
-                  'Voir mes réservations',
+                  'Payer maintenant',
                   style: TextStyle(fontSize: 16),
                 ),
               ),

@@ -9,10 +9,10 @@ class AppDrawer extends StatelessWidget {
         children: [
           DrawerHeader(
             decoration: BoxDecoration(color: Colors.white),
-            child: Center( // Center the content inside the DrawerHeader
+            child: Center( // Centrer le contenu dans le DrawerHeader
               child: Column(
-                mainAxisAlignment: MainAxisAlignment.center, // Center the column vertically
-                crossAxisAlignment: CrossAxisAlignment.center, // Center the column horizontally
+                mainAxisAlignment: MainAxisAlignment.center, // Centrer la colonne verticalement
+                crossAxisAlignment: CrossAxisAlignment.center, // Centrer la colonne horizontalement
                 children: [
                   CircleAvatar(
                     backgroundColor: Colors.blue,
@@ -29,7 +29,7 @@ class AppDrawer extends StatelessWidget {
                       Navigator.pushNamed(context, '/login');
                     },
                     child: Text(
-                      'ou se connecter',
+                      'Ou se connecter',
                       style: TextStyle(fontSize: 14, color: Colors.blue),
                     ),
                   ),
@@ -41,65 +41,67 @@ class AppDrawer extends StatelessWidget {
           ListTile(
             leading: Icon(Icons.notifications),
             title: Text('Notifications'),
-            onTap: () {}, // Implement functionality
+            onTap: () {}, // Implémenter la fonctionnalité
           ),
-         ListTile(
+          ListTile(
             leading: Icon(Icons.home),
             title: Text('Réserver une voiture', style: TextStyle(color: Colors.blue)),
             onTap: () {
-              Navigator.pushNamed(context, '/reservation_form'); // Navigate to Reservation Form
+              Navigator.pushNamed(context, '/reservation_form'); // Naviguer vers le formulaire de réservation
             },
           ),
           ListTile(
             leading: Icon(Icons.list_alt),
-            title: Text('Mes Réservations'),
+            title: Text('Mes réservations'),
             onTap: () {
               Navigator.pushNamed(context, '/reservations');
             },
           ),
-         
-        
           ListTile(
-  leading: Icon(Icons.history),
-  title: Text('Historique de recherche'),
-  onTap: () {
-    Navigator.pushNamed(context, '/search_history');  // Navigate to Search History page
-  },
-),
-ListTile(
-  leading: Icon(Icons.list_alt),
-  title: Text('Mes Réservations'),
-  onTap: () {
-    Navigator.pushNamed(context, '/reservation_history');  // Navigate to Reservation History page
-  },
-),
+            leading: Icon(Icons.history),
+            title: Text('Historique des recherches'),
+            onTap: () {
+              Navigator.pushNamed(context, '/search_history');  // Naviguer vers la page de l'historique des recherches
+            },
+          ),
           ListTile(
-  leading: Icon(Icons.local_offer),
-  title: Text('Offres'),
+            leading: Icon(Icons.list_alt),
+            title: Text('Historique des réservations'),
+            onTap: () {
+              Navigator.pushNamed(context, '/reservation_history');  // Naviguer vers la page de l'historique des réservations
+            },
+          ),
+          ListTile(
+            leading: Icon(Icons.local_offer),
+            title: Text('Offres'),
+            onTap: () {
+              Navigator.pushNamed(context, '/offers'); // Naviguer vers la page des offres
+            },
+          ),
+          ListTile(
+  leading: Icon(Icons.payment),
+  title: Text('Paiement'),
   onTap: () {
-    Navigator.pushNamed(context, '/offers'); // Navigate to the Offers Page
+    Navigator.pushNamed(context, '/payment'); // Naviguer vers la page de paiement
   },
 ),
 
-   ListTile(
-  leading: Icon(Icons.settings),
-  title: Text('Paramètres'),
-  onTap: () {
-    Navigator.pushNamed(context, '/settings'); // Navigate to the Settings Page
-  },
-),
-
-          
-         
+          ListTile(
+            leading: Icon(Icons.settings),
+            title: Text('Paramètres'),
+            onTap: () {
+              Navigator.pushNamed(context, '/settings'); // Naviguer vers la page des paramètres
+            },
+          ),
           ListTile(
             leading: Icon(Icons.help),
             title: Text('Centre d\'aide'),
-            onTap: () {}, // Implement functionality
+            onTap: () {}, // Implémenter la fonctionnalité
           ),
           ListTile(
             leading: Icon(Icons.share),
             title: Text('Rentcars'),
-            onTap: () {}, // Implement functionality
+            onTap: () {}, // Implémenter la fonctionnalité
           ),
         ],
       ),
