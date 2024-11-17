@@ -116,15 +116,15 @@ class _RentCarsHomePageState extends State<RentCarsHomePage> {
         backgroundColor: Colors.white,
         elevation: 2,
         centerTitle: true,
-        title: RichText(
-          text: TextSpan(
-            style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, fontFamily: 'Roboto'),
-            children: [
-              TextSpan(text: 'Rent', style: TextStyle(color: Colors.black)),
-              TextSpan(text: 'Cars', style: TextStyle(color: Colors.blue)),
-            ],
-          ),
-        ),
+         title: RichText(
+    text: TextSpan(
+      style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, fontFamily: 'Roboto'),
+      children: [
+        TextSpan(text: 'Rent', style: TextStyle(color: Colors.black)),
+        TextSpan(text: 'Cars', style: TextStyle(color: Colors.blue)),
+      ],
+    ),
+  ),
         leading: Builder(
           builder: (context) => IconButton(
             icon: Icon(Icons.menu, color: Colors.black),
@@ -140,6 +140,7 @@ class _RentCarsHomePageState extends State<RentCarsHomePage> {
               // Handle notifications icon tap here
             },
           ),
+          
         ],
       ),
       drawer: AppDrawer(),

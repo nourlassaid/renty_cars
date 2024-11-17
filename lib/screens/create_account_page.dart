@@ -13,9 +13,9 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
   TextEditingController passwordController = TextEditingController();
   TextEditingController phoneController = TextEditingController();
   TextEditingController confirmpasswordController = TextEditingController();
+  String _role = 'client'; // Default role
 
   CollectionReference users = FirebaseFirestore.instance.collection('users');
-
   Color blueColor = Colors.blue;
 
   Future<void> addUser() async {
@@ -33,6 +33,7 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
           'email': emailController.text,
           'password': passwordController.text,
           'phone': phoneController.text,
+          'role': _role, // Save the role
         });
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Compte créé avec succès')),
@@ -128,9 +129,31 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
                   obscureText: true,
                   validator: (value) => value!.isEmpty ? 'Veuillez confirmer votre mot de passe' : null,
                 ),
+                SizedBox(height: 15),
+                DropdownButtonFormField<String>(
+                  value: _role,
+                  decoration: InputDecoration(
+                    labelText: 'Rôle',
+                    prefixIcon: Icon(Icons.person, color: blueColor),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                  ),
+                  items: ['client', 'admin']
+                      .map((role) => DropdownMenuItem(
+                            value: role,
+                            child: Text(role),
+                          ))
+                      .toList(),
+                  onChanged: (value) {
+                    setState(() {
+                      _role = value!;
+                    });
+                  },
+                ),
                 SizedBox(height: 25),
                 ElevatedButton(
-                  onPressed: addUser,
+                  onPressed: () => addUser(),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: blueColor,
                     padding: EdgeInsets.symmetric(vertical: 16),

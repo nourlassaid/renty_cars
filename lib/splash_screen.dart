@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:rentycars_nour/screens/home_page.dart'; // Import your home page
+import 'package:rentycars_nour/admin/admin_dashboard.dart';  // Ensure this is correct
+
 
 class SplashScreen extends StatefulWidget {
   @override
