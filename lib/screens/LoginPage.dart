@@ -42,7 +42,7 @@ Future<void> login(BuildContext context) async {
         // Navigate to admin dashboard if user is an admin
         Navigator.of(context).pushReplacement(
           MaterialPageRoute(
-            builder: (context) => AdminDashboardPage(), // Admin page
+            builder: (context) => AdminDashboard() // Admin page
           ),
         );
       } else {
