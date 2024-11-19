@@ -1,16 +1,8 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:rentycars_nour/admin/AdminReservationManagementPage.dart';
-import 'package:rentycars_nour/admin/AdminUserManagementPage.dart';
-import 'package:rentycars_nour/admin/BlockUserPage.dart';
-import 'package:rentycars_nour/admin/ModifyReservationPage%20.dart';
-import 'package:rentycars_nour/admin/ViewCarsPage.dart';
-import 'package:rentycars_nour/admin/add_car.dart';
-import 'package:rentycars_nour/admin/admin_dashboard.dart';
-import 'package:rentycars_nour/admin/admin_gestion_agence.dart';
-import 'package:rentycars_nour/admin/admin_dashboard.dart';
-import 'package:rentycars_nour/screens/ReservationsPage.dart';
+
+import 'package:rentycars_nour/admin/admin_home_page.dart';
 import 'package:rentycars_nour/screens/home_page.dart';
 import 'package:rentycars_nour/screens/payment_choice_page.dart';
 import 'package:rentycars_nour/screens/profile_page.dart';
@@ -61,19 +53,13 @@ class MyApp extends StatelessWidget {
         '/profile': (context) => ProfilePage(), // Profile Page
         '/login': (context) => LoginPage(), // Login Page
         '/create_account': (context) => CreateAccountPage(), // Create Account Page
-        '/reservations': (context) => ReservationsPage(), // Reservations Page
         '/reservation_form': (context) => ReservationFormPage(), // Reservation Form
         '/reservation_history': (context) => ReservationHistoryPage(), // Reservation History
         '/search_history': (context) => SearchHistoryPage(), // Search History
         '/settings': (context) => SettingsPage(), // Settings Page
         '/offers': (context) => OffersPage(), // Offers Page
-   '/admin_dashboard': (context) => AdminDashboard(),  // Dashboard Admin
-        '/add_car': (context) => AddCarPage(),  // Ajouter une voiture
-        '/view_cars': (context) => ViewCarsPage(),  // Voir les voitures
-        '/admin_user_management': (context) => AdminUserManagementPage(),  // Gestion des utilisateurs
-        '/admin_reservation_management': (context) => AdminReservationManagementPage(),  // Gestion des réservations
-        '/block_user': (context) => BlockUserPage(),  // Bloquer un utilisateur
-        '/modify_reservation': (context) => ModifyReservationPage(),  // Modifier une réservation
+   '/admin_dashboard': (context) => AdminHomePage(),  // Dashboard Admin
+        
                '/payment': (context) => PaymentChoicePage(
   onPaymentConfirmed: () {
     // Logique lorsque le paiement est confirmé

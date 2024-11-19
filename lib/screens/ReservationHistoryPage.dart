@@ -26,10 +26,10 @@ class ReservationHistoryPage extends StatelessWidget {
       appBar: AppBar(
         title: Text(
           'Historique de Réservation',
-          style: TextStyle(color: Colors.white),
+          style: TextStyle(color: const Color.fromARGB(255, 10, 9, 9)),
         ),
         centerTitle: true,
-        backgroundColor: Colors.blue,
+       backgroundColor: const Color.fromARGB(255, 255, 255, 255),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),

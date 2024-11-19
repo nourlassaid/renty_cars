@@ -2,7 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:rentycars_nour/admin/admin_dashboard.dart';
+import 'package:rentycars_nour/admin/admin_home_page.dart';
 import 'package:rentycars_nour/screens/create_account_page.dart';
 import 'package:rentycars_nour/services/api.dart';
 import 'home_page.dart';
@@ -16,6 +16,7 @@ class _LoginPageState extends State<LoginPage> {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
   final ApiServices apiServices = ApiServices(); // Create an instance of ApiServices
+  
 
   CollectionReference users = FirebaseFirestore.instance.collection('users');
   Color blueColor = Colors.blue;
@@ -42,7 +43,7 @@ Future<void> login(BuildContext context) async {
         // Navigate to admin dashboard if user is an admin
         Navigator.of(context).pushReplacement(
           MaterialPageRoute(
-            builder: (context) => AdminDashboard() // Admin page
+            builder: (context) => AdminHomePage() // Admin page
           ),
         );
       } else {

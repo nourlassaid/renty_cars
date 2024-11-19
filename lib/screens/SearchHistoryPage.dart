@@ -1,16 +1,28 @@
 import 'package:flutter/material.dart';
 
-class SearchHistoryPage extends StatelessWidget {
+class SearchHistoryPage extends StatefulWidget {
+  @override
+  _SearchHistoryPageState createState() => _SearchHistoryPageState();
+}
+
+class _SearchHistoryPageState extends State<SearchHistoryPage> {
+  // Exemple de données pour l'historique de recherche
+  List<String> searchHistory = [
+    'Toyota Corolla',
+    'Mercedes-Benz C-Class',
+    'Jeep Wrangler',
+    'BMW X5',
+  ];
+
+  // Fonction pour supprimer un élément de l'historique
+  void _removeSearchHistory(int index) {
+    setState(() {
+      searchHistory.removeAt(index);
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    // Exemple de données pour l'historique de recherche
-    final List<String> searchHistory = [
-      'Toyota Corolla',
-      'Mercedes-Benz C-Class',
-      'Jeep Wrangler',
-      'BMW X5',
-    ];
-
     return Scaffold(
       appBar: AppBar(
         title: Text(
@@ -18,7 +30,18 @@ class SearchHistoryPage extends StatelessWidget {
           style: TextStyle(color: Colors.white),
         ),
         centerTitle: true,
-        backgroundColor: Colors.blue,
+        backgroundColor: Colors.white,
+        actions: [
+          IconButton(
+            icon: Icon(Icons.clear_all),
+            onPressed: () {
+              // Supprimer tout l'historique de recherche
+              setState(() {
+                searchHistory.clear();
+              });
+            },
+          ),
+        ],
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -48,10 +71,11 @@ class SearchHistoryPage extends StatelessWidget {
                         return Card(
                           margin: EdgeInsets.symmetric(vertical: 8.0),
                           shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10.0),
+                            borderRadius: BorderRadius.circular(12.0),
                           ),
-                          elevation: 3,
+                          elevation: 4,
                           child: ListTile(
+                            contentPadding: EdgeInsets.all(12),
                             leading: Icon(
                               Icons.history,
                               color: Colors.blue,
@@ -63,11 +87,15 @@ class SearchHistoryPage extends StatelessWidget {
                             trailing: Icon(
                               Icons.arrow_forward_ios,
                               color: Colors.grey,
-                              size: 16,
+                              size: 18,
                             ),
                             onTap: () {
                               // Implémentez une action pour effectuer une nouvelle recherche
                               print('Recherche sélectionnée : ${searchHistory[index]}');
+                            },
+                            onLongPress: () {
+                              // Supprimer un élément au long press
+                              _removeSearchHistory(index);
                             },
                           ),
                         );

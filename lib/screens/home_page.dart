@@ -2,13 +2,17 @@ import 'dart:convert';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:rentycars_nour/widgets/car_card.dart';
 import '../widgets/app_drawer.dart';
 import '../widgets/category_tab.dart';
-import '../widgets/car_card.dart';
-import 'car_detail_page.dart';
+import 'package:rentycars_nour/screens/car_detail_page.dart';
 import 'favorites_page.dart';
 import 'profile_page.dart'; // Import ProfilePage
+import 'profile_page.dart'; // Import ProfilePage
 import 'package:http/http.dart' as http;
+
+
+
 
 class RentCarsHomePage extends StatefulWidget {
   @override
@@ -112,38 +116,36 @@ class _RentCarsHomePageState extends State<RentCarsHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-     appBar: AppBar(
-  backgroundColor: Colors.white,
-  elevation: 2,
-  centerTitle: true,
-  title: RichText(
-    text: TextSpan(
-      style: TextStyle(
-        fontSize: 24, // Définir la taille de la police ici
-        fontWeight: FontWeight.bold,
-        fontFamily: 'Roboto', // Définir la famille de la police ici
-        color: Colors.black, // Couleur du texte
-      ),
-      children: [
-        TextSpan(text: 'Rent', style: TextStyle(color: Colors.black)),
-        TextSpan(text: 'Cars', style: TextStyle(color: Colors.blue)),
-      ],
-    ),
-  ),
-  leading: Builder(
-    builder: (context) => IconButton(
-      icon: Icon(Icons.menu, color: Colors.black),
-      onPressed: () {
-        Scaffold.of(context).openDrawer();
-      },
-    ),
-  ),
+      appBar: AppBar(
+         backgroundColor: Colors.white,
+        elevation: 2,
+        centerTitle: true,
+        title: RichText(
+          text: TextSpan(
+            style: TextStyle(
+              fontSize: 24,
+              fontWeight: FontWeight.bold,
+              fontFamily: 'Roboto',
+              color: Colors.black,
+            ),
+            children: [
+              TextSpan(text: 'Rent', style: TextStyle(color: Colors.black)),
+              TextSpan(text: 'Cars', style: TextStyle(color: Colors.blue)),
+            ],
+          ),
+        ),
+        leading: Builder(
+          builder: (context) => IconButton(
+            icon: Icon(Icons.menu, color: Colors.black),
+            onPressed: () {
+              Scaffold.of(context).openDrawer();
+            },
+          ),
+        ),
         actions: [
           IconButton(
             icon: Icon(Icons.notifications, color: Colors.black),
-            onPressed: () {
-              // Handle notifications icon tap here
-            },
+            onPressed: () {},
           ),
         ],
       ),
@@ -172,9 +174,7 @@ class _RentCarsHomePageState extends State<RentCarsHomePage> {
                 SizedBox(width: 10),
                 IconButton(
                   icon: Icon(Icons.filter_list, color: Colors.grey[500]),
-                  onPressed: () {
-                    // Handle filter action here
-                  },
+                  onPressed: () {},
                 ),
               ],
             ),
@@ -233,8 +233,7 @@ class _RentCarsHomePageState extends State<RentCarsHomePage> {
                           ),
                         ),
                       );
-                    },
-                    onFavoriteTap: () {
+                    }, onFavoriteTap: () {
                       FirebaseFirestore.instance.collection('favorites').add({
                         'imageUrl': car['imageUrl'],
                         'model': car['model'],
@@ -262,12 +261,12 @@ class _RentCarsHomePageState extends State<RentCarsHomePage> {
         unselectedItemColor: Colors.grey,
         items: [
           BottomNavigationBarItem(
-            icon: Icon(Icons.map),
-            label: 'Map',
+            icon: Icon(Icons.home),
+            label: 'Home',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.swap_horiz),
-            label: 'Swap',
+            icon: Icon(Icons.pending_actions),
+            label: 'Requests',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.calendar_today),
@@ -278,8 +277,12 @@ class _RentCarsHomePageState extends State<RentCarsHomePage> {
             label: 'Favorites',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.account_circle),
-            label: 'Profile', // Profile item in BottomNavigationBar
+            icon: CircleAvatar(
+              radius: 12,
+              backgroundImage: AssetImage(
+                  'assets/images/profile_picture.png'), // Profile picture placeholder
+            ),
+                label: 'Profile',
           ),
         ],
       ),

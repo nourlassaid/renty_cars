@@ -1,117 +1,55 @@
 import 'package:flutter/material.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 
-class ReservationsPage extends StatelessWidget {
+class ReservationsPage extends StatefulWidget {
+  @override
+  _ReservationsPageState createState() => _ReservationsPageState();
+}
+
+class _ReservationsPageState extends State<ReservationsPage> {
+  int selectedTabIndex = 0;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Liste des Réservations"),
-        backgroundColor: Colors.blue,
+        title: Text('Car Reservations'),
       ),
-      body: StreamBuilder<QuerySnapshot>(
-        stream: FirebaseFirestore.instance.collection('reservations').snapshots(),
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(child: CircularProgressIndicator());
-          }
-          if (snapshot.hasError) {
-            return Center(child: Text('Erreur: ${snapshot.error}'));
-          }
-          if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-            return Center(child: Text('Aucune réservation trouvée.'));
-          }
-
-          final reservations = snapshot.data!.docs;
-          return ListView.builder(
-            itemCount: reservations.length,
-            itemBuilder: (context, index) {
-              final reservation = reservations[index].data() as Map<String, dynamic>;
-              final reservationId = reservations[index].id;
-
-              return ReservationTile(
-                reservationId: reservationId,
-                carModel: reservation['carModel'] ?? 'Modèle inconnu',
-                clientName: reservation['clientName'] ?? 'Client inconnu',
-                status: reservation['status'] ?? 'Statut inconnu',
-                reservationDate: reservation['reservationDate'] ?? 'Date inconnue',
-              );
-            },
-          );
-        },
-      ),
-    );
-  }
-}
-
-class ReservationTile extends StatelessWidget {
-  final String reservationId;
-  final String carModel;
-  final String clientName;
-  final String status;
-  final String reservationDate;
-
-  ReservationTile({
-    required this.reservationId,
-    required this.carModel,
-    required this.clientName,
-    required this.status,
-    required this.reservationDate,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Card(
-      margin: EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-      elevation: 4,
-      child: Padding(
-        padding: EdgeInsets.all(10.0),
-        child: Row(
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
           children: [
-            Icon(Icons.car_rental, size: 40, color: Colors.blue),
-            SizedBox(width: 15),
+            // Tab selection for reservation status
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                _buildTabButton('Pending', 0),
+                _buildTabButton('Accepted', 1),
+                _buildTabButton('Canceled', 2),
+              ],
+            ),
+            SizedBox(height: 16),
+
+            // Reservations list
             Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+              child: ListView(
                 children: [
-                  Text(
-                    carModel,
-                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                  ReservationCard(
+                    rentalPeriod: '2024/11/01 - 2024/11/08',
+                    carModel: 'BMW X5',
+                    customerName: 'John Doe',
+                    passengers: 5,
+                    imageUrl:
+                        'https://example.com/bmw_x5.jpg', // Replace with a valid car image URL
                   ),
-                  SizedBox(height: 5),
-                  Text('Client: $clientName'),
-                  Text('Date: $reservationDate'),
-                  SizedBox(height: 10),
-                  Text(
-                    'Statut: $status',
-                    style: TextStyle(
-                      color: status == 'Acceptée' ? Colors.green : Colors.red,
-                    ),
+                  ReservationCard(
+                    rentalPeriod: '2024/12/01 - 2024/12/07',
+                    carModel: 'Mercedes GLA',
+                    customerName: 'Jane Smith',
+                    passengers: 4,
+                    imageUrl:
+                        'https://example.com/mercedes_gla.jpg', // Replace with a valid car image URL
                   ),
-                  SizedBox(height: 5),
-                  Row(
-                    children: [
-                      // Accept or Cancel buttons (optional based on status)
-                      if (status == 'En attente') ...[
-                        ElevatedButton(
-                          onPressed: () {
-                            _updateReservationStatus(reservationId, 'Acceptée');
-                          },
-                          child: Text('Accepter'),
-                          style: ElevatedButton.styleFrom(backgroundColor: Colors.green),
-                        ),
-                        SizedBox(width: 8),
-                        ElevatedButton(
-                          onPressed: () {
-                            _updateReservationStatus(reservationId, 'Annulée');
-                          },
-                          child: Text('Annuler'),
-                          style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
-                        ),
-                      ],
-                    ],
-                  ),
+                  // Add more reservations here
                 ],
               ),
             ),
@@ -121,15 +59,101 @@ class ReservationTile extends StatelessWidget {
     );
   }
 
-  // Function to update reservation status
-  Future<void> _updateReservationStatus(String reservationId, String newStatus) async {
-    try {
-      await FirebaseFirestore.instance.collection('reservations').doc(reservationId).update({
-        'status': newStatus,
-      });
-      print('Reservation status updated to $newStatus');
-    } catch (e) {
-      print('Failed to update reservation status: $e');
-    }
+  Widget _buildTabButton(String label, int index) {
+    bool isSelected = selectedTabIndex == index;
+    return Expanded(
+      child: GestureDetector(
+        onTap: () {
+          setState(() {
+            selectedTabIndex = index;
+          });
+        },
+        child: Container(
+          alignment: Alignment.center,
+          padding: EdgeInsets.symmetric(vertical: 8),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(20),
+            color: isSelected ? Colors.orange : Colors.grey[200],
+          ),
+          child: Text(
+            label,
+            style: TextStyle(
+              color: isSelected ? Colors.white : Colors.black,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class ReservationCard extends StatelessWidget {
+  final String rentalPeriod;
+  final String carModel;
+  final String customerName;
+  final int passengers;
+  final String imageUrl;
+
+  ReservationCard({
+    required this.rentalPeriod,
+    required this.carModel,
+    required this.customerName,
+    required this.passengers,
+    required this.imageUrl,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      margin: EdgeInsets.only(bottom: 16.0),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
+      child: Padding(
+        padding: const EdgeInsets.all(12.0),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Car image
+            ClipRRect(
+              borderRadius: BorderRadius.circular(8.0),
+              child: Image.network(
+                imageUrl,
+                width: 60,
+                height: 60,
+                fit: BoxFit.cover,
+              ),
+            ),
+            SizedBox(width: 12),
+
+            // Car rental details
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    rentalPeriod,
+                    style: TextStyle(fontSize: 14, color: Colors.grey),
+                  ),
+                  SizedBox(height: 4),
+                  Text(
+                    carModel,
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                  ),
+                  SizedBox(height: 4),
+                  Text(
+                    '👤 Customer: $customerName',
+                    style: TextStyle(color: Colors.grey[700]),
+                  ),
+                  Text(
+                    '$passengers passenger(s)',
+                    style: TextStyle(color: Colors.grey[700]),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
   }
 }
