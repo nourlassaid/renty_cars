@@ -139,7 +139,7 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
                       borderRadius: BorderRadius.circular(12),
                     ),
                   ),
-                  items: ['client', 'admin']
+                  items: ['client', 'agent']
                       .map((role) => DropdownMenuItem(
                             value: role,
                             child: Text(role),

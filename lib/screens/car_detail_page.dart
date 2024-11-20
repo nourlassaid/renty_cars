@@ -35,8 +35,8 @@ class _CarDetailPageState extends State<CarDetailPage> {
   Timer? _carouselTimer;
 
   final List<String> fallbackImages = [
-    'assets/car_default.jpg',
-    'assets/car2.jpg'
+    'assets/images/car_default.jpg',
+    'assets//images/car2.jpg'
   ];
 
   final List<Map<String, dynamic>> specifications = [

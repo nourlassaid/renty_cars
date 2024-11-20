@@ -14,11 +14,15 @@ class AppDrawer extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center, // Centrer la colonne verticalement
                 crossAxisAlignment: CrossAxisAlignment.center, // Centrer la colonne horizontalement
                 children: [
-                  CircleAvatar(
-                    backgroundColor: Colors.blue,
-                    radius: 30,
-                    child: Icon(Icons.person, size: 40, color: Colors.white),
-                  ),
+                CircleAvatar(
+                        radius: 20,
+                        backgroundColor: Colors.blueAccent,
+                        child: Icon(
+                          Icons.camera_alt,
+                          color: Colors.white,
+                          size: 20,
+                        ),
+                      ),
                   SizedBox(height: 8),
                   Text(
                     'Créer un compte',

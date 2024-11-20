@@ -317,14 +317,7 @@ class _RentCarsHomePageState extends State<RentCarsHomePage> {
             icon: Icon(Icons.favorite),
             label: 'Favorites',
           ),
-          BottomNavigationBarItem(
-            icon: CircleAvatar(
-              radius: 12,
-              backgroundImage: AssetImage(
-                  'assets/images/profile_picture.png'), // Profile picture placeholder
-            ),
-            label: 'Profile',
-          ),
+         
         ],
       ),
     );

@@ -12,6 +12,16 @@ class CarListPage extends StatelessWidget {
         title: Text('Liste des Voitures'),
         backgroundColor: const Color.fromARGB(255, 245, 245, 245),
         foregroundColor: const Color.fromARGB(255, 3, 3, 3),
+         actions: [
+          // Notification Icon in AppBar
+          IconButton(
+            icon: Icon(Icons.notifications),
+            onPressed: () {
+              // Handle notification icon tap (e.g., navigate to a notifications page)
+              print("Notification icon tapped");
+            },
+          ),
+        ],
       ),
       body: StreamBuilder<QuerySnapshot>(
         stream: _firestore.collection('cars').snapshots(),

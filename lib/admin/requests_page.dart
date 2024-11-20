@@ -1,58 +1,68 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 class RequestsPage extends StatelessWidget {
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+
+  Future<List<Map<String, dynamic>>> _fetchReservations() async {
+    try {
+      QuerySnapshot snapshot = await _firestore.collection('reservations').get();
+      return snapshot.docs.map((doc) => doc.data() as Map<String, dynamic>).toList();
+    } catch (e) {
+      print("Error fetching reservations: $e");
+      return [];
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text('Reservation History'),
-        backgroundColor: Colors.blueAccent,
+        backgroundColor: const Color.fromARGB(255, 254, 254, 255),
         elevation: 0,
+         actions: [
+          // Notification Icon in AppBar
+          IconButton(
+            icon: Icon(Icons.notifications),
+            onPressed: () {
+              // Handle notification icon tap (e.g., navigate to a notifications page)
+              print("Notification icon tapped");
+            },
+          ),
+        ],
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: Column(
-          children: [
-            // Section Title
-            Text(
-              'Completed Reservations',
-              style: TextStyle(
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
-                color: Colors.black87,
-              ),
-            ),
-            SizedBox(height: 16),
+        child: FutureBuilder<List<Map<String, dynamic>>>(
+          future: _fetchReservations(),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return Center(child: CircularProgressIndicator());
+            } else if (snapshot.hasError) {
+              return Center(child: Text('Error loading data'));
+            } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+              return Center(child: Text('No reservations found'));
+            } else {
+              List<Map<String, dynamic>> reservations = snapshot.data!;
 
-            // List of historical requests
-            Expanded(
-              child: ListView(
-                children: [
-                  HistoryCard(
-                    rentalPeriod: '2023/11/01 - 2023/11/07',
-                    carModel: 'Tesla Model S',
-                    customerName: 'Sarah Connor',
-                    passengers: 3,
-                    imageUrl:
-                        'https://example.com/tesla_model_s.jpg', // Replace with actual image URL
-                    status: 'Completed',
-                    completionDate: '2023/11/07',
-                  ),
-                  HistoryCard(
-                    rentalPeriod: '2023/10/15 - 2023/10/22',
-                    carModel: 'Audi A6',
-                    customerName: 'Peter Parker',
-                    passengers: 4,
-                    imageUrl:
-                        'https://example.com/audi_a6.jpg', // Replace with actual image URL
-                    status: 'Completed',
-                    completionDate: '2023/10/22',
-                  ),
-                  // Add more completed reservations here
-                ],
-              ),
-            ),
-          ],
+              return ListView.builder(
+                itemCount: reservations.length,
+                itemBuilder: (context, index) {
+                  var reservation = reservations[index];
+                  return HistoryCard(
+                    rentalPeriod: reservation['rentalPeriod'] ?? 'Unknown',
+                    carModel: reservation['carModel'] ?? 'Unknown',
+                    customerName: reservation['customerName'] ?? 'Unknown',
+                    passengers: reservation['passengers'] ?? 0,
+                    imageUrl: reservation['imageUrl'] ?? '',
+                    status: reservation['status'] ?? 'Pending',
+                    completionDate: reservation['completionDate'] ?? 'N/A',
+                  );
+                },
+              );
+            }
+          },
         ),
       ),
     );
@@ -80,6 +90,8 @@ class HistoryCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    Color statusColor = status == 'Completed' ? Colors.green : Colors.yellow;
+
     return Card(
       margin: EdgeInsets.only(bottom: 16.0),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
@@ -92,12 +104,18 @@ class HistoryCard extends StatelessWidget {
             // Car Image
             ClipRRect(
               borderRadius: BorderRadius.circular(12.0),
-              child: Image.network(
-                imageUrl,
-                width: 80,
-                height: 80,
-                fit: BoxFit.cover,
-              ),
+              child: imageUrl.isNotEmpty
+                  ? Image.network(
+                      imageUrl,
+                      width: 80,
+                      height: 80,
+                      fit: BoxFit.cover,
+                    )
+                  : Icon(
+                      Icons.car_rental,
+                      size: 80,
+                      color: Colors.grey,
+                    ),
             ),
             SizedBox(width: 16),
 
@@ -109,9 +127,10 @@ class HistoryCard extends StatelessWidget {
                   Text(
                     carModel,
                     style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.black87),
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black87,
+                    ),
                   ),
                   SizedBox(height: 4),
                   Text(
@@ -142,7 +161,7 @@ class HistoryCard extends StatelessWidget {
                     children: [
                       Icon(
                         Icons.check_circle,
-                        color: Colors.green,
+                        color: statusColor,
                         size: 20,
                       ),
                       SizedBox(width: 8),

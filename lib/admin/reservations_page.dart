@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 class ReservationsPage extends StatefulWidget {
@@ -7,12 +8,50 @@ class ReservationsPage extends StatefulWidget {
 
 class _ReservationsPageState extends State<ReservationsPage> {
   int selectedTabIndex = 0;
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+
+  // Function to fetch reservations based on the selected tab index
+  Future<List<Map<String, dynamic>>> _fetchReservations() async {
+    try {
+      String statusFilter = '';
+      if (selectedTabIndex == 0) {
+        statusFilter = 'Pending';
+      } else if (selectedTabIndex == 1) {
+        statusFilter = 'Accepted';
+      } else if (selectedTabIndex == 2) {
+        statusFilter = 'Canceled';
+      }
+
+      // Fetching reservations based on the selected tab filter
+      QuerySnapshot snapshot = await _firestore
+          .collection('reservations')
+          .where('status', isEqualTo: statusFilter)
+          .get();
+      
+      return snapshot.docs.map((doc) => doc.data() as Map<String, dynamic>).toList();
+    } catch (e) {
+      print("Error fetching reservations: $e");
+      return [];
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text('Car Reservations'),
+                backgroundColor: const Color.fromARGB(255, 254, 254, 255),
+
+        actions: [
+          // Notification Icon in AppBar
+          IconButton(
+            icon: Icon(Icons.notifications),
+            onPressed: () {
+              // Handle notification icon tap (e.g., navigate to a notifications page)
+              print("Notification icon tapped");
+            },
+          ),
+        ],
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -31,26 +70,33 @@ class _ReservationsPageState extends State<ReservationsPage> {
 
             // Reservations list
             Expanded(
-              child: ListView(
-                children: [
-                  ReservationCard(
-                    rentalPeriod: '2024/11/01 - 2024/11/08',
-                    carModel: 'BMW X5',
-                    customerName: 'John Doe',
-                    passengers: 5,
-                    imageUrl:
-                        'https://example.com/bmw_x5.jpg', // Replace with a valid car image URL
-                  ),
-                  ReservationCard(
-                    rentalPeriod: '2024/12/01 - 2024/12/07',
-                    carModel: 'Mercedes GLA',
-                    customerName: 'Jane Smith',
-                    passengers: 4,
-                    imageUrl:
-                        'https://example.com/mercedes_gla.jpg', // Replace with a valid car image URL
-                  ),
-                  // Add more reservations here
-                ],
+              child: FutureBuilder<List<Map<String, dynamic>>>(
+                future: _fetchReservations(),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return Center(child: CircularProgressIndicator());
+                  } else if (snapshot.hasError) {
+                    return Center(child: Text('Error loading data'));
+                  } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                    return Center(child: Text('No reservations found'));
+                  } else {
+                    List<Map<String, dynamic>> reservations = snapshot.data!;
+
+                    return ListView.builder(
+                      itemCount: reservations.length,
+                      itemBuilder: (context, index) {
+                        var reservation = reservations[index];
+                        return ReservationCard(
+                          rentalPeriod: reservation['rentalPeriod'] ?? 'Unknown',
+                          carModel: reservation['carModel'] ?? 'Unknown',
+                          customerName: reservation['customerName'] ?? 'Unknown',
+                          passengers: reservation['passengers'] ?? 0,
+                          imageUrl: reservation['imageUrl'] ?? '',
+                        );
+                      },
+                    );
+                  }
+                },
               ),
             ),
           ],
@@ -59,6 +105,7 @@ class _ReservationsPageState extends State<ReservationsPage> {
     );
   }
 
+  // Tab Button UI
   Widget _buildTabButton(String label, int index) {
     bool isSelected = selectedTabIndex == index;
     return Expanded(
@@ -116,12 +163,18 @@ class ReservationCard extends StatelessWidget {
             // Car image
             ClipRRect(
               borderRadius: BorderRadius.circular(8.0),
-              child: Image.network(
-                imageUrl,
-                width: 60,
-                height: 60,
-                fit: BoxFit.cover,
-              ),
+              child: imageUrl.isNotEmpty
+                  ? Image.network(
+                      imageUrl,
+                      width: 60,
+                      height: 60,
+                      fit: BoxFit.cover,
+                    )
+                  : Icon(
+                      Icons.car_rental,
+                      size: 60,
+                      color: Colors.grey,
+                    ),
             ),
             SizedBox(width: 12),
 
