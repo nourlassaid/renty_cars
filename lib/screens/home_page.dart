@@ -210,34 +210,38 @@ class _RentCarsHomePageState extends State<RentCarsHomePage> {
             ),
             SizedBox(height: 16),
             Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                GestureDetector(
-                  onTap: () => updateCategory('All'),
-                  child: CategoryTab(
-                    label: 'All',
-                    icon: FontAwesomeIcons.car,
-                    isSelected: selectedCategory == 'All',
-                  ),
-                ),
-                GestureDetector(
-                  onTap: () => updateCategory('SUV'),
-                  child: CategoryTab(
-                    label: 'SUV',
-                    icon: FontAwesomeIcons.truckMonster,
-                    isSelected: selectedCategory == 'SUV',
-                  ),
-                ),
-                GestureDetector(
-                  onTap: () => updateCategory('Luxury'),
-                  child: CategoryTab(
-                    label: 'Luxury',
-                    icon: FontAwesomeIcons.gem,
-                    isSelected: selectedCategory == 'Luxury',
-                  ),
-                ),
-              ],
-            ),
+  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+  children: [
+    GestureDetector(
+      onTap: () => updateCategory('All'),
+      child: CategoryTab(
+        label: 'All',
+        icon: FontAwesomeIcons.car,
+        isSelected: selectedCategory == 'All',
+        onTap: () => updateCategory('All'), // Add this
+      ),
+    ),
+    GestureDetector(
+      onTap: () => updateCategory('SUV'),
+      child: CategoryTab(
+        label: 'SUV',
+        icon: FontAwesomeIcons.truckMonster,
+        isSelected: selectedCategory == 'SUV',
+        onTap: () => updateCategory('SUV'), // Add this
+      ),
+    ),
+    GestureDetector(
+      onTap: () => updateCategory('Luxury'),
+      child: CategoryTab(
+        label: 'Luxury',
+        icon: FontAwesomeIcons.gem,
+        isSelected: selectedCategory == 'Luxury',
+        onTap: () => updateCategory('Luxury'), // Add this
+      ),
+    ),
+  ],
+),
+
             SizedBox(height: 16),
             // Show loading indicator if data is loading
             isLoading

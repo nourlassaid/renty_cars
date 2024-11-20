@@ -2,7 +2,7 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 
-import 'package:rentycars_nour/admin/admin_home_page.dart';
+import 'package:rentycars_nour/admin/admin_dashboard.dart';
 import 'package:rentycars_nour/screens/home_page.dart';
 import 'package:rentycars_nour/screens/payment_choice_page.dart';
 import 'package:rentycars_nour/screens/profile_page.dart';
@@ -16,6 +16,8 @@ import 'package:rentycars_nour/screens/settings_page.dart'; // Settings page
 import 'package:rentycars_nour/screens/offerspage.dart'; // Offers page
 import 'screens/ReviewPage.dart';
 import 'package:rentycars_nour/screens/payment_choice_page.dart';
+import 'package:rentycars_nour/admin/cars_list_page.dart';
+
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -58,8 +60,7 @@ class MyApp extends StatelessWidget {
         '/search_history': (context) => SearchHistoryPage(), // Search History
         '/settings': (context) => SettingsPage(), // Settings Page
         '/offers': (context) => OffersPage(), // Offers Page
-   '/admin_dashboard': (context) => AdminHomePage(),  // Dashboard Admin
-        
+   '/admin_dashboard': (context) =>RentCarsHomePage() ,
                '/payment': (context) => PaymentChoicePage(
   onPaymentConfirmed: () {
     // Logique lorsque le paiement est confirmé

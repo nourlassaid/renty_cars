@@ -4,7 +4,7 @@ class CategoryTab extends StatelessWidget {
   final String label;
   final IconData icon;
 
-  const CategoryTab({required this.label, required this.icon, required bool isSelected});
+  const CategoryTab({required this.label, required this.icon, required bool isSelected, required void Function() onTap});
 
   @override
   Widget build(BuildContext context) {
