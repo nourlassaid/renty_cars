@@ -6,8 +6,8 @@ class ProfilePage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text('Profile'),
-        backgroundColor: Colors.white, 
-         actions: [
+        backgroundColor: Colors.white,
+        actions: [
           // Notification Icon in AppBar
           IconButton(
             icon: Icon(Icons.notifications),
@@ -16,9 +16,8 @@ class ProfilePage extends StatelessWidget {
               print("Notification icon tapped");
             },
           ),
-        ],// Make the app bar more vibrant
+        ], // Make the app bar more vibrant
       ),
-      
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -30,8 +29,8 @@ class ProfilePage extends StatelessWidget {
                   // Profile picture with a border and shadow
                   CircleAvatar(
                     radius: 60,
-                    backgroundImage: AssetImage(
-                        'assets/profile_picture.png'), // Profile picture placeholder
+                    backgroundImage: AssetImage('assets/profile_picture.png'),
+                    // Profile picture placeholder
                     backgroundColor: Colors.grey[200],
                   ),
                   Positioned(
@@ -58,7 +57,7 @@ class ProfilePage extends StatelessWidget {
             SizedBox(height: 24),
             // Name text with larger font size and bold
             Text(
-              "John Doe",
+              "nour lassaid",
               style: TextStyle(
                 fontSize: 28,
                 fontWeight: FontWeight.bold,
@@ -68,7 +67,7 @@ class ProfilePage extends StatelessWidget {
             SizedBox(height: 8),
             // Email with smaller and lighter font
             Text(
-              "johndoe@example.com",
+              "nourlassaid@gmail.com",
               style: TextStyle(
                 fontSize: 18,
                 color: Colors.grey[600],
@@ -78,10 +77,15 @@ class ProfilePage extends StatelessWidget {
             // Buttons for updating info and logging out with improved spacing and styling
             ElevatedButton(
               onPressed: () {
-                // Action to update information
+                // Navigate to the Update Info screen or show a dialog
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => UpdateInfoPage()),
+                );
               },
               style: ElevatedButton.styleFrom(
-                minimumSize: Size(double.infinity, 50), backgroundColor: Colors.blueAccent,
+                minimumSize: Size(double.infinity, 50),
+                backgroundColor: Colors.blueAccent,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(10),
                 ),
@@ -94,10 +98,12 @@ class ProfilePage extends StatelessWidget {
             SizedBox(height: 16),
             ElevatedButton(
               onPressed: () {
-                // Action to log out
+                // Show a confirmation dialog for logging out
+                _showLogoutDialog(context);
               },
               style: ElevatedButton.styleFrom(
-                minimumSize: Size(double.infinity, 50), backgroundColor: Colors.redAccent,
+                minimumSize: Size(double.infinity, 50),
+                backgroundColor: Colors.redAccent,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(10),
                 ),
@@ -109,6 +115,66 @@ class ProfilePage extends StatelessWidget {
             ),
           ],
         ),
+      ),
+    );
+  }
+
+  // Function to show logout confirmation dialog
+  void _showLogoutDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Log Out'),
+          content: Text('Are you sure you want to log out?'),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(); // Close the dialog
+              },
+              child: Text('Cancel'),
+            ),
+            TextButton(
+              onPressed: () {
+                // Perform logout logic (e.g., clear session, navigate to login page)
+                Navigator.of(context).pop(); // Close the dialog
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(builder: (context) => LoginPage()),
+                );
+              },
+              child: Text('Log Out'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+}
+
+class UpdateInfoPage extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Update Info'),
+      ),
+      body: Center(
+        child: Text('Update information screen'),
+      ),
+    );
+  }
+}
+
+class LoginPage extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Login'),
+      ),
+      body: Center(
+        child: Text('Login page'),
       ),
     );
   }

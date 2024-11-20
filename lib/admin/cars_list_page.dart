@@ -12,7 +12,7 @@ class CarListPage extends StatelessWidget {
         title: Text('Liste des Voitures'),
         backgroundColor: const Color.fromARGB(255, 245, 245, 245),
         foregroundColor: const Color.fromARGB(255, 3, 3, 3),
-         actions: [
+        actions: [
           // Notification Icon in AppBar
           IconButton(
             icon: Icon(Icons.notifications),
@@ -24,7 +24,7 @@ class CarListPage extends StatelessWidget {
         ],
       ),
       body: StreamBuilder<QuerySnapshot>(
-        stream: _firestore.collection('cars').snapshots(),
+        stream: _firestore.collection('cars').snapshots(),  // Stream of car data
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return Center(child: CircularProgressIndicator());
