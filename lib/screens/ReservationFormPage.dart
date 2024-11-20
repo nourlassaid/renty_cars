@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'payment_choice_page.dart'; // Ensure to import the payment choice page
 
@@ -117,20 +118,13 @@ class _ReservationFormPageState extends State<ReservationFormPage> {
             fontSize: 20,
           ),
         ),
-        flexibleSpace: Container(
-          decoration: BoxDecoration(
-           
-          ),
-        ),
       ),
       body: Padding(
-         
         padding: const EdgeInsets.all(16.0),
         child: Form(
           key: _formKey,
           child: ListView(
             children: [
-              
               // Add logo at the top
               Center(
                 child: CircleAvatar(
@@ -208,7 +202,7 @@ class _ReservationFormPageState extends State<ReservationFormPage> {
               SizedBox(height: 15),
               // Chauffeur Option
               SwitchListTile(
-                title: Text('Souhaitez-vous un chauffeur ?'),
+                title: Text('Existe-il un deuxieme chauffeur ?'),
                 value: hasChauffeur,
                 onChanged: (bool value) {
                   setState(() {
@@ -308,12 +302,7 @@ class _ReservationFormPageState extends State<ReservationFormPage> {
       onPressed: onPressed,
       style: ElevatedButton.styleFrom(
         backgroundColor: color,
-        padding: EdgeInsets.symmetric(vertical: 15),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(10),
-        ),
-        shadowColor: Colors.black.withOpacity(0.2),
-        elevation: 5,
+        padding: EdgeInsets.symmetric(horizontal: 24, vertical: 12),
       ),
       child: Text(
         label,

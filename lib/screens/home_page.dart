@@ -8,11 +8,7 @@ import '../widgets/category_tab.dart';
 import 'package:rentycars_nour/screens/car_detail_page.dart';
 import 'favorites_page.dart';
 import 'profile_page.dart'; // Import ProfilePage
-import 'profile_page.dart'; // Import ProfilePage
 import 'package:http/http.dart' as http;
-
-
-
 
 class RentCarsHomePage extends StatefulWidget {
   @override
@@ -22,35 +18,21 @@ class RentCarsHomePage extends StatefulWidget {
 class _RentCarsHomePageState extends State<RentCarsHomePage> {
   String selectedCategory = 'All';
   int _selectedIndex = 0;
+  bool isLoading = true; // State for loading indicator
+  bool isLoadingMore = false; // State for loading more cars
+  ScrollController _scrollController = ScrollController();
 
-  final List<Map<String, dynamic>> cars = [
-    {
-      'imageUrl': 'assets/images/day-exterior-4.png',
-      'model': 'Toyota Corolla',
-      'location': 'Tunis Center',
-      'price': '70DT per day',
-      'rating': 4.5,
-      'type': 'Sedan',
-      'category': 'All',
-    },
-    {
-      'imageUrl': 'assets/images/Mercedes-Benz C-Class.jpg',
-      'model': 'Mercedes-Benz C-Class',
-      'location': 'Sfax Downtown',
-      'price': '150DT per day',
-      'rating': 4.8,
-      'type': 'Luxury',
-      'category': 'Luxury',
-    },
-    {
-      'imageUrl': 'assets/images/suv_example.jpg',
-      'model': 'Jeep Wrangler',
-      'location': 'Djerba Beach',
-      'price': '90DT per day',
-      'rating': 4.7,
-      'type': 'SUV',
-      'category': 'SUV',
-    },
+  List<Map<String, dynamic>> cars = [
+    {'imageUrl': 'assets/images/day-exterior-4.png', 'model': 'Toyota Corolla', 'location': 'Tunis Center', 'price': '70DT per day', 'rating': 4.5, 'type': 'Sedan', 'category': 'All'},
+    {'imageUrl': 'assets/images/Mercedes-Benz C-Class.jpg', 'model': 'Mercedes-Benz C-Class', 'location': 'Sfax Downtown', 'price': '150DT per day', 'rating': 4.8, 'type': 'Luxury', 'category': 'Luxury'},
+    {'imageUrl': 'assets/images/suv_example.jpg', 'model': 'Jeep Wrangler', 'location': 'Djerba Beach', 'price': '90DT per day', 'rating': 4.7, 'type': 'SUV', 'category': 'SUV'},
+    {'imageUrl': 'assets/images/toyota_camry.jpg', 'model': 'Toyota Camry', 'location': 'Tunis', 'price': '80DT per day', 'rating': 4.6, 'type': 'Sedan', 'category': 'All'},
+    {'imageUrl': 'assets/images/mercedes_benz_s_class.jpg', 'model': 'Mercedes-Benz S-Class', 'location': 'Monastir', 'price': '200DT per day', 'rating': 5.0, 'type': 'Luxury', 'category': 'Luxury'},
+    {'imageUrl': 'assets/images/honda_crv.jpg', 'model': 'Honda CR-V', 'location': 'Sousse', 'price': '85DT per day', 'rating': 4.4, 'type': 'SUV', 'category': 'SUV'},
+    {'imageUrl': 'assets/images/lexus_rx.jpg', 'model': 'Lexus RX', 'location': 'Tunis', 'price': '120DT per day', 'rating': 4.7, 'type': 'Luxury', 'category': 'Luxury'},
+    {'imageUrl': 'assets/images/toyota_rav4.jpg', 'model': 'Toyota RAV4', 'location': 'Nabeul', 'price': '95DT per day', 'rating': 4.6, 'type': 'SUV', 'category': 'SUV'},
+    {'imageUrl': 'assets/images/bmw_3_series.jpg', 'model': 'BMW 3 Series', 'location': 'Sfax', 'price': '110DT per day', 'rating': 4.8, 'type': 'Sedan', 'category': 'All'},
+    {'imageUrl': 'assets/images/ford_mustang.jpg', 'model': 'Ford Mustang', 'location': 'Hammamet', 'price': '150DT per day', 'rating': 4.9, 'type': 'Luxury', 'category': 'Luxury'},
   ];
 
   List<Map<String, dynamic>> get filteredCars {
@@ -63,6 +45,30 @@ class _RentCarsHomePageState extends State<RentCarsHomePage> {
   void updateCategory(String category) {
     setState(() {
       selectedCategory = category;
+    });
+  }
+
+  // Simulate loading more cars (You can replace this with Firebase or API call)
+  Future<void> loadMoreCars() async {
+    setState(() {
+      isLoadingMore = true;
+    });
+
+    // Simulate network delay for fetching more data
+    await Future.delayed(Duration(seconds: 2), () {
+      // Add more cars to the list
+      List<Map<String, dynamic>> newCars = [
+        {'imageUrl': 'assets/images/suv_example.jpg', 'model': 'Jeep Wrangler', 'location': 'Djerba Beach', 'price': '90DT per day', 'rating': 4.7, 'type': 'SUV', 'category': 'SUV'},
+        {'imageUrl': 'assets/images/toyota_camry.jpg', 'model': 'Toyota Camry', 'location': 'Tunis', 'price': '80DT per day', 'rating': 4.6, 'type': 'Sedan', 'category': 'All'},
+        {'imageUrl': 'assets/images/mercedes_benz_s_class.jpg', 'model': 'Mercedes-Benz S-Class', 'location': 'Monastir', 'price': '200DT per day', 'rating': 5.0, 'type': 'Luxury', 'category': 'Luxury'},
+        {'imageUrl': 'assets/images/honda_crv.jpg', 'model': 'Honda CR-V', 'location': 'Sousse', 'price': '85DT per day', 'rating': 4.4, 'type': 'SUV', 'category': 'SUV'},
+        // New set of cars to add
+      ];
+
+      setState(() {
+        cars.addAll(newCars); // Add new cars to the list
+        isLoadingMore = false; // Hide loading indicator after loading new cars
+      });
     });
   }
 
@@ -114,10 +120,34 @@ class _RentCarsHomePageState extends State<RentCarsHomePage> {
   }
 
   @override
+  void initState() {
+    super.initState();
+    // Initial loading
+    Future.delayed(Duration(seconds: 2), () {
+      setState(() {
+        isLoading = false;
+      });
+    });
+
+    // Adding scroll listener
+    _scrollController.addListener(() {
+      if (_scrollController.position.pixels == _scrollController.position.maxScrollExtent && !isLoadingMore) {
+        loadMoreCars(); // Load more cars when reaching the bottom
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-         backgroundColor: Colors.white,
+        backgroundColor: Colors.white,
         elevation: 2,
         centerTitle: true,
         title: RichText(
@@ -209,47 +239,54 @@ class _RentCarsHomePageState extends State<RentCarsHomePage> {
               ],
             ),
             SizedBox(height: 16),
-            Expanded(
-              child: ListView(
-                children: filteredCars.map((car) {
-                  return CarCard(
-                    imageUrl: car['imageUrl'],
-                    model: car['model'],
-                    location: car['location'],
-                    price: car['price'],
-                    rating: car['rating'],
-                    type: car['type'],
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => CarDetailPage(
-                            imageUrl: car['imageUrl'],
-                            model: car['model'],
-                            location: car['location'],
-                            price: car['price'],
-                            rating: car['rating'],
-                            type: car['type'],
-                          ),
-                        ),
-                      );
-                    }, onFavoriteTap: () {
-                      FirebaseFirestore.instance.collection('favorites').add({
-                        'imageUrl': car['imageUrl'],
-                        'model': car['model'],
-                        'location': car['location'],
-                        'price': car['price'],
-                        'rating': car['rating'],
-                        'type': car['type'],
-                      });
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(content: Text('${car['model']} added to favorites.')),
-                      );
-                    },
-                  );
-                }).toList(),
-              ),
-            ),
+            // Show loading indicator if data is loading
+            isLoading
+                ? Center(child: CircularProgressIndicator()) // Show loading spinner
+                : Expanded(
+                    child: ListView(
+                      controller: _scrollController,
+                      children: filteredCars.map((car) {
+                        return CarCard(
+                          imageUrl: car['imageUrl'],
+                          model: car['model'],
+                          location: car['location'],
+                          price: car['price'],
+                          rating: car['rating'],
+                          type: car['type'],
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => CarDetailPage(
+                                  imageUrl: car['imageUrl'],
+                                  model: car['model'],
+                                  location: car['location'],
+                                  price: car['price'],
+                                  rating: car['rating'],
+                                  type: car['type'],
+                                ),
+                              ),
+                            );
+                          },
+                          onFavoriteTap: () {
+                            FirebaseFirestore.instance.collection('favorites').add({
+                              'imageUrl': car['imageUrl'],
+                              'model': car['model'],
+                              'location': car['location'],
+                              'price': car['price'],
+                              'rating': car['rating'],
+                              'type': car['type'],
+                            });
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(content: Text('${car['model']} added to favorites.')),
+                            );
+                          },
+                        );
+                      }).toList(),
+                    ),
+                  ),
+            if (isLoadingMore)
+              Center(child: CircularProgressIndicator()), // Loading indicator at the bottom
           ],
         ),
       ),
@@ -282,7 +319,7 @@ class _RentCarsHomePageState extends State<RentCarsHomePage> {
               backgroundImage: AssetImage(
                   'assets/images/profile_picture.png'), // Profile picture placeholder
             ),
-                label: 'Profile',
+            label: 'Profile',
           ),
         ],
       ),

@@ -1,125 +1,261 @@
-import 'package:flutter/material.dart';
+import 'dart:convert';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:rentycars_nour/screens/favorites_page.dart';
+import 'package:rentycars_nour/widgets/car_card.dart';
+import '../widgets/app_drawer.dart';
+import '../widgets/category_tab.dart';
+import 'package:rentycars_nour/admin/car_detail_page_admin.dart';
+import 'favorites_page.dart';
+import 'profile_page.dart'; // Import ProfilePage
+import 'package:http/http.dart' as http;
 
-class HomePage extends StatelessWidget {
+class RentCarsHomePage extends StatefulWidget {
+  @override
+  _RentCarsHomePageState createState() => _RentCarsHomePageState();
+}
+
+class _RentCarsHomePageState extends State<RentCarsHomePage> {
+  String selectedCategory = 'All';
+  int _selectedIndex = 0;
+
+  // Nouvelle liste de voitures
+  final List<Map<String, dynamic>> cars = [
+    {
+      'imageUrl': 'assets/images/day-exterior-4.png',
+      'model': 'Toyota Camry',
+      'location': 'Tunis Downtown',
+      'price': '100DT per day',
+      'rating': 4.3,
+      'type': 'Sedan',
+      'category': 'All',
+    },
+    {
+      'imageUrl': 'assets/images/Mercedes-Benz C-Class.jpg',
+      'model': 'Tesla Model S',
+      'location': 'La Marsa',
+      'price': '200DT per day',
+      'rating': 4.9,
+      'type': 'Luxury',
+      'category': 'Luxury',
+    },
+    {
+      'imageUrl': 'assets/images/suv_example.jpg',
+      'model': 'Ford Escape',
+      'location': 'Djerba',
+      'price': '120DT per day',
+      'rating': 4.5,
+      'type': 'SUV',
+      'category': 'SUV',
+    },
+  ];
+
+  // Filtre les voitures en fonction de la catégorie sélectionnée
+  List<Map<String, dynamic>> get filteredCars {
+    if (selectedCategory == 'All') {
+      return cars;
+    }
+    return cars.where((car) => car['category'] == selectedCategory).toList();
+  }
+
+  // Mise à jour de la catégorie sélectionnée
+  void updateCategory(String category) {
+    setState(() {
+      selectedCategory = category;
+    });
+  }
+
+  // Fonction de recherche dans Firebase (exemple)
+  Future<List<Map<String, dynamic>>> searchCarsFromFirebase(
+      String query) async {
+    final snapshot = await FirebaseFirestore.instance
+        .collection('cars')
+        .where('model', isGreaterThanOrEqualTo: query)
+        .where('model', isLessThanOrEqualTo: query + '\uf8ff')
+        .get();
+
+    return snapshot.docs.map((doc) => doc.data()).toList();
+  }
+
+  // Fonction de recherche dans une API externe (exemple)
+  Future<List<Map<String, dynamic>>> searchCarsFromAPI(String query) async {
+    final response =
+        await http.get(Uri.parse('https://jsonplaceholder.typicode.com/posts'));
+    if (response.statusCode == 200) {
+      final data = json.decode(response.body);
+      return (data as List)
+          .where((item) =>
+              item['title'].toLowerCase().contains(query.toLowerCase()))
+          .map((item) => {
+                'model': item['title'],
+                'description': item['body'],
+              })
+          .toList();
+    } else {
+      throw Exception('Failed to fetch data from API');
+    }
+  }
+
+  // Mise à jour de l'index du bas de la barre de navigation
+  void _onItemTapped(int index) {
+    if (index == 3) {
+      // Favoris
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => FavoritesPage()),
+      );
+    } else if (index == 4) {
+      // Profil
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => ProfilePage()), // Naviguer vers ProfilePage
+      );
+    } else {
+      setState(() {
+        _selectedIndex = index;
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Home'),
-      ),
-     body: StreamBuilder<QuerySnapshot>(
-
-  stream: FirebaseFirestore.instance.collection('cars').snapshots(),
-  builder: (context, snapshot) {
-    if (snapshot.connectionState == ConnectionState.waiting) {
-      return Center(child: CircularProgressIndicator());
-    }
-    if (snapshot.hasError) {
-      return Center(child: Text('Error: ${snapshot.error}'));
-    }
-    if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-      return Center(child: Text('No cars found.'));
-    }
-
-    final cars = snapshot.data!.docs;
-
-    return ListView.builder(
-      itemCount: cars.length,
-      itemBuilder: (context, index) {
-        final car = cars[index];
-        final data = car.data() as Map<String, dynamic>?; // Cast explicite
-
-        // Gestion des données nulles ou manquantes
-        final title = data?['title'] ?? 'Unknown';
-        final location = data?['location'] ?? 'Unknown';
-        final price = data?['price'] != null ? "${data!['price']}DT per day" : 'N/A';
-        final rating = data?['rating'] != null ? (data!['rating'] as num).toDouble() : 0.0;
-
-        // Conversion explicite en List<String>
-        final images = data?['images'] != null
-            ? List<String>.from(data!['images'] as List)
-            : [];
-
-        return CarCard(
-          title: title,
-          location: location,
-          price: price,
-          rating: rating, images: [],
-        
-        );
-      },
-    );
-  },
-),
-
-
-    );
-  }
-}
-
-class CarCard extends StatelessWidget {
-  final String title;
-  final String location;
-  final String price;
-  final double rating;
-  final List<String> images;
-
-  CarCard({
-    required this.title,
-    required this.location,
-    required this.price,
-    required this.rating,
-    required this.images,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Card(
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
-      margin: EdgeInsets.all(8.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          if (images.isNotEmpty)
-            ClipRRect(
-              borderRadius: BorderRadius.vertical(top: Radius.circular(12.0)),
-              child: Image.network(
-                images.first,
-                height: 180,
-                width: double.infinity,
-                fit: BoxFit.cover,
-                errorBuilder: (context, error, stackTrace) {
-                  return Center(
-                    child: Icon(Icons.broken_image, size: 50, color: Colors.grey),
-                  );
-                },
-              ),
+        backgroundColor: Colors.white,
+        elevation: 2,
+        centerTitle: true,
+        title: RichText(
+          text: TextSpan(
+            style: TextStyle(
+              fontSize: 24,
+              fontWeight: FontWeight.bold,
+              fontFamily: 'Roboto',
+              color: Colors.black,
             ),
-          Padding(
-            padding: EdgeInsets.all(16.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              TextSpan(text: 'Rent', style: TextStyle(color: Colors.black)),
+              TextSpan(text: 'Cars', style: TextStyle(color: Colors.blue)),
+            ],
+          ),
+        ),
+        leading: Builder(
+          builder: (context) => IconButton(
+            icon: Icon(Icons.menu, color: Colors.black),
+            onPressed: () {
+              Scaffold.of(context).openDrawer();
+            },
+          ),
+        ),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.notifications, color: Colors.black),
+            onPressed: () {},
+          ),
+        ],
+      ),
+      drawer: AppDrawer(),
+      body: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+        child: Column(
+          children: [
+            Row(
               children: [
-                Text(
-                  title,
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                Expanded(
+                  child: TextField(
+                    decoration: InputDecoration(
+                      hintText: 'Search by car model...',
+                      hintStyle: TextStyle(color: Colors.grey[500]),
+                      prefixIcon: Icon(Icons.search, color: Colors.grey[500]),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                        borderSide: BorderSide.none,
+                      ),
+                      filled: true,
+                      fillColor: Colors.grey[200],
+                    ),
+                  ),
                 ),
-                SizedBox(height: 8),
-                Text(location, style: TextStyle(color: Colors.grey)),
-                SizedBox(height: 8),
-                Text(price, style: TextStyle(fontSize: 16, color: Colors.blue)),
-                SizedBox(height: 8),
-                Row(
-                  children: List.generate(
-                    rating.round(),
-                    (index) => Icon(Icons.star, color: Colors.yellow, size: 20),
+                SizedBox(width: 10),
+                IconButton(
+                  icon: Icon(Icons.filter_list, color: Colors.grey[500]),
+                  onPressed: () {},
+                ),
+              ],
+            ),
+            SizedBox(height: 16),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                GestureDetector(
+                  onTap: () => updateCategory('All'),
+                  child: CategoryTab(
+                    label: 'All',
+                    icon: FontAwesomeIcons.car,
+                    isSelected: selectedCategory == 'All',
+                  ),
+                ),
+                GestureDetector(
+                  onTap: () => updateCategory('SUV'),
+                  child: CategoryTab(
+                    label: 'SUV',
+                    icon: FontAwesomeIcons.truckMonster,
+                    isSelected: selectedCategory == 'SUV',
+                  ),
+                ),
+                GestureDetector(
+                  onTap: () => updateCategory('Luxury'),
+                  child: CategoryTab(
+                    label: 'Luxury',
+                    icon: FontAwesomeIcons.gem,
+                    isSelected: selectedCategory == 'Luxury',
                   ),
                 ),
               ],
             ),
-          ),
-        ],
+            SizedBox(height: 16),
+            Expanded(
+              child: ListView(
+                children: filteredCars.map((car) {
+                  return CarCard(
+                    imageUrl: car['imageUrl'],
+                    model: car['model'],
+                    location: car['location'],
+                    price: car['price'],
+                    rating: car['rating'],
+                    type: car['type'],
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => CarDetailPage(
+                            imageUrl: car['imageUrl'],
+                            model: car['model'],
+                            location: car['location'],
+                            price: car['price'],
+                            rating: car['rating'],
+                            type: car['type'],
+                          ),
+                        ),
+                      );
+                    },
+                    onFavoriteTap: () {
+                      FirebaseFirestore.instance.collection('favorites').add({
+                        'imageUrl': car['imageUrl'],
+                        'model': car['model'],
+                        'location': car['location'],
+                        'price': car['price'],
+                        'rating': car['rating'],
+                        'type': car['type'],
+                      });
+                    },
+                  );
+                }).toList(),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

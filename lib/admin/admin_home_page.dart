@@ -15,7 +15,7 @@ class _AdminHomePageState extends State<AdminHomePage> {
   int _selectedIndex = 0;
 
   static List<Widget> _pages = <Widget>[
-    HomePage(),
+    RentCarsHomePage(),
     ReservationsPage(),
     RequestsPage(),
     CarManagementPage(),
