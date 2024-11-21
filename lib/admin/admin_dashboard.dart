@@ -1,4 +1,8 @@
+import 'dart:io';
+
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:rentycars_nour/admin/requests_page.dart';
 import 'package:rentycars_nour/admin/reservations_page.dart';
 import 'car_management.dart';  // Assurez-vous d'importer la page de gestion des voitures
@@ -28,7 +32,39 @@ class _AdminDashboardState extends State<AdminDashboard> {
       _selectedIndex = index;
     });
   }
+ File? _imageFile; // Pour stocker l'image sélectionnée
 
+  // Instancier l'image picker
+  final picker = ImagePicker();
+
+  // Fonction pour sélectionner l'image
+  Future<void> _pickImage() async {
+    final pickedFile = await picker.pickImage(source: ImageSource.gallery); // Galerie ou prendre photo (ImageSource.camera)
+    if (pickedFile != null) {
+      setState(() {
+        _imageFile = File(pickedFile.path);
+      });
+    }
+  }
+
+  // Fonction pour télécharger l'image dans Firebase Storage
+  Future<String> _uploadImage() async {
+    if (_imageFile == null) return ''; // Pas d'image à télécharger
+
+    // Créer un chemin unique pour l'image dans Firebase Storage
+    String fileName = DateTime.now().millisecondsSinceEpoch.toString();
+    try {
+      Reference storageReference = FirebaseStorage.instance.ref().child('car_images/$fileName');
+      UploadTask uploadTask = storageReference.putFile(_imageFile!);
+
+      TaskSnapshot taskSnapshot = await uploadTask.whenComplete(() => null);
+      String downloadUrl = await taskSnapshot.ref.getDownloadURL();
+      return downloadUrl;
+    } catch (e) {
+      print("Erreur lors du téléchargement de l'image: $e");
+      return '';
+    }
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(

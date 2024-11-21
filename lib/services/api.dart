@@ -13,7 +13,7 @@ class ApiServices {
   }
 
   // Récupérer la liste des commentaires pour un post
-  Future<List<Map<String, dynamic>>> getComments() async {
+  Future<List<Map<String, dynamic>>> getComments(String postId) async {
     final res = await http.get(Uri.parse("https://jsonplaceholder.typicode.com/posts/1/comments"));
     return List<Map<String, dynamic>>.from(json.decode(res.body));
   }

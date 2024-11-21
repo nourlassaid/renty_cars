@@ -1,10 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'car_management.dart'; // Import the CarManagement screen.
+import 'car_management.dart'; // Importez le formulaire de gestion des voitures
 
 class CarListPage extends StatelessWidget {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
+  // Fonction pour supprimer une voiture de Firestore
   Future<void> _deleteCar(BuildContext context, String carId) async {
     try {
       await _firestore.collection('cars').doc(carId).delete();
@@ -29,10 +30,10 @@ class CarListPage extends StatelessWidget {
           IconButton(
             icon: Icon(Icons.add),
             onPressed: () {
-              // Navigate to the Car Management page to add new cars
+              // Naviguer vers le formulaire de gestion des voitures pour ajouter une voiture
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => CarManagement()),
+                MaterialPageRoute(builder: (context) => CarManagement(carIdToEdit: null)),
               );
             },
           ),
@@ -41,7 +42,7 @@ class CarListPage extends StatelessWidget {
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: StreamBuilder<QuerySnapshot>(
-          stream: _firestore.collection('cars').snapshots(),
+          stream: _firestore.collection('cars').snapshots(),  // Flux de voitures depuis Firestore
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return Center(child: CircularProgressIndicator());
@@ -66,6 +67,7 @@ class CarListPage extends StatelessWidget {
     );
   }
 
+  // Fonction pour construire chaque carte de voiture dans la liste
   Widget _buildCarCard(BuildContext context, DocumentSnapshot car) {
     return Card(
       margin: EdgeInsets.symmetric(vertical: 8.0),
@@ -83,10 +85,11 @@ class CarListPage extends StatelessWidget {
         trailing: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
+            // Bouton pour éditer la voiture
             IconButton(
               icon: Icon(Icons.edit, color: Colors.blueAccent),
               onPressed: () {
-                // Navigate to CarManagement screen to edit the car
+                // Naviguer vers le formulaire de gestion pour modifier la voiture
                 Navigator.push(
                   context,
                   MaterialPageRoute(
@@ -95,6 +98,7 @@ class CarListPage extends StatelessWidget {
                 );
               },
             ),
+            // Bouton pour supprimer la voiture
             IconButton(
               icon: Icon(Icons.delete, color: Colors.red),
               onPressed: () {

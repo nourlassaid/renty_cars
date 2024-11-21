@@ -209,7 +209,7 @@ class _RentCarsHomePageState extends State<RentCarsHomePage> {
               ],
             ),
             SizedBox(height: 16),
-            Row(
+           Row(
   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
   children: [
     GestureDetector(
@@ -218,7 +218,9 @@ class _RentCarsHomePageState extends State<RentCarsHomePage> {
         label: 'All',
         icon: FontAwesomeIcons.car,
         isSelected: selectedCategory == 'All',
-        onTap: () => updateCategory('All'), // Add this
+        onTap: () => updateCategory('All'),
+        selectedCategory: selectedCategory,  // Pass selectedCategory here
+        onCategorySelected: updateCategory, // Pass the updateCategory function
       ),
     ),
     GestureDetector(
@@ -227,7 +229,9 @@ class _RentCarsHomePageState extends State<RentCarsHomePage> {
         label: 'SUV',
         icon: FontAwesomeIcons.truckMonster,
         isSelected: selectedCategory == 'SUV',
-        onTap: () => updateCategory('SUV'), // Add this
+        onTap: () => updateCategory('SUV'),
+        selectedCategory: selectedCategory, // Pass selectedCategory here
+        onCategorySelected: updateCategory, // Pass the updateCategory function
       ),
     ),
     GestureDetector(
@@ -236,13 +240,14 @@ class _RentCarsHomePageState extends State<RentCarsHomePage> {
         label: 'Luxury',
         icon: FontAwesomeIcons.gem,
         isSelected: selectedCategory == 'Luxury',
-        onTap: () => updateCategory('Luxury'), // Add this
+        onTap: () => updateCategory('Luxury'),
+        selectedCategory: selectedCategory, // Pass selectedCategory here
+        onCategorySelected: updateCategory, // Pass the updateCategory function
       ),
     ),
   ],
 ),
-
-            SizedBox(height: 16),
+       SizedBox(height: 16),
             // Show loading indicator if data is loading
             isLoading
                 ? Center(child: CircularProgressIndicator()) // Show loading spinner
@@ -267,7 +272,7 @@ class _RentCarsHomePageState extends State<RentCarsHomePage> {
                                   location: car['location'],
                                   price: car['price'],
                                   rating: car['rating'],
-                                  type: car['type'],
+                                  type: car['type'], car: {},
                                 ),
                               ),
                             );
@@ -316,6 +321,10 @@ class _RentCarsHomePageState extends State<RentCarsHomePage> {
           BottomNavigationBarItem(
             icon: Icon(Icons.favorite),
             label: 'Favorites',
+          ),
+           BottomNavigationBarItem(
+            icon: Icon(Icons.account_circle),
+            label: 'Profile',
           ),
          
         ],

@@ -21,7 +21,7 @@ class CarDetailPage extends StatefulWidget {
     required this.location,
     required this.price,
     required this.rating,
-    required this.type,
+    required this.type, required Map car,
   }) : super(key: key);
 
   @override
@@ -223,7 +223,7 @@ class _CarDetailPageState extends State<CarDetailPage> {
                             onTap: () {
                               Navigator.push(
                                 context,
-                                MaterialPageRoute(builder: (context) => ReviewPage(postId: '',)),
+                                MaterialPageRoute(builder: (context) => ReviewPage(postId: widget.model)),
                               );
                             },
                             child: Text(" (5 reviews)", style: TextStyle(color: Colors.blue)),
@@ -298,16 +298,13 @@ class _CarDetailPageState extends State<CarDetailPage> {
                 if (user != null) {
                   Navigator.push(context, MaterialPageRoute(builder: (context) => ReservationFormPage()));
                 } else {
-                  bool shouldLogin = await _showLoginDialog(context);
+                  final shouldLogin = await _showLoginDialog(context);
                   if (shouldLogin) {
                     Navigator.push(context, MaterialPageRoute(builder: (context) => LoginPage()));
                   }
                 }
               },
-              style: ElevatedButton.styleFrom(backgroundColor: Colors.blue, padding: EdgeInsets.symmetric(horizontal: 24, vertical: 12)),
-              child: isLoading
-                  ? CircularProgressIndicator(color: Colors.white)
-                  : Text('Reserve Now', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+              child: Text('Reserve Now'),
             ),
           ],
         ),

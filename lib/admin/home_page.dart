@@ -97,27 +97,6 @@ class _RentCarsHomePageState extends State<RentCarsHomePage> {
     }
   }
 
-  // Mise à jour de l'index du bas de la barre de navigation
-  void _onItemTapped(int index) {
-    if (index == 3) {
-      // Favoris
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => FavoritesPage()),
-      );
-    } else if (index == 4) {
-      // Profil
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-            builder: (context) => ProfilePage()), // Naviguer vers ProfilePage
-      );
-    } else {
-      setState(() {
-        _selectedIndex = index;
-      });
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -194,7 +173,7 @@ class _RentCarsHomePageState extends State<RentCarsHomePage> {
         label: 'All',
         icon: FontAwesomeIcons.car,
         isSelected: selectedCategory == 'All',
-        onTap: () => updateCategory('All'), // Add this
+        onTap: () => updateCategory('All'), selectedCategory: '', onCategorySelected: (String category) {  }, // Add this
       ),
     ),
     GestureDetector(
@@ -203,7 +182,7 @@ class _RentCarsHomePageState extends State<RentCarsHomePage> {
         label: 'SUV',
         icon: FontAwesomeIcons.truckMonster,
         isSelected: selectedCategory == 'SUV',
-        onTap: () => updateCategory('SUV'), // Add this
+        onTap: () => updateCategory('SUV'), selectedCategory: '', onCategorySelected: (String category) {  }, // Add this
       ),
     ),
     GestureDetector(
@@ -212,51 +191,44 @@ class _RentCarsHomePageState extends State<RentCarsHomePage> {
         label: 'Luxury',
         icon: FontAwesomeIcons.gem,
         isSelected: selectedCategory == 'Luxury',
-        onTap: () => updateCategory('Luxury'), // Add this
+        onTap: () => updateCategory('Luxury'), selectedCategory: '', onCategorySelected: (String category) {  }, // Add this
       ),
     ),
   ],
 ),
             SizedBox(height: 16),
-            Expanded(
-              child: ListView(
-                children: filteredCars.map((car) {
-                  return CarCard(
-                    imageUrl: car['imageUrl'],
-                    model: car['model'],
-                    location: car['location'],
-                    price: car['price'],
-                    rating: car['rating'],
-                    type: car['type'],
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => CarDetailPage(
-                            imageUrl: car['imageUrl'],
-                            model: car['model'],
-                            location: car['location'],
-                            price: car['price'],
-                            rating: car['rating'],
-                            type: car['type'],
-                          ),
-                        ),
-                      );
-                    },
-                    onFavoriteTap: () {
-                      FirebaseFirestore.instance.collection('favorites').add({
-                        'imageUrl': car['imageUrl'],
-                        'model': car['model'],
-                        'location': car['location'],
-                        'price': car['price'],
-                        'rating': car['rating'],
-                        'type': car['type'],
-                      });
-                    },
-                  );
-                }).toList(),
+         Expanded(
+  child: ListView(
+    children: filteredCars.map((car) {
+      return CarCard(
+        imageUrl: car['imageUrl'],
+        model: car['model'],
+        location: car['location'],
+        price: car['price'],
+        rating: car['rating'],
+        type: car['type'],
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => CarDetailPage(
+                imageUrl: car['imageUrl'],
+                model: car['model'],
+                location: car['location'],
+                price: car['price'],
+                rating: car['rating'],
+                type: car['type'],
               ),
             ),
+          );
+        }, onFavoriteTap: () {  },
+        // Removing the onFavoriteTap callback will remove the star icon.
+       // Set it to null or remove this line if it's a parameter in the CarCard widget
+      );
+    }).toList(),
+  ),
+)
+
           ],
         ),
       ),

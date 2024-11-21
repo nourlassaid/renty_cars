@@ -16,7 +16,7 @@ import 'package:rentycars_nour/screens/settings_page.dart'; // Settings page
 import 'package:rentycars_nour/screens/offerspage.dart'; // Offers page
 import 'screens/ReviewPage.dart';
 import 'package:rentycars_nour/screens/payment_choice_page.dart';
-import 'package:rentycars_nour/admin/cars_list_page.dart';
+import 'package:rentycars_nour/admin/CarListPage.dart';
 
 
 void main() async {

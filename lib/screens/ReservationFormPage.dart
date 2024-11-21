@@ -20,7 +20,7 @@ class _ReservationFormPageState extends State<ReservationFormPage> {
   bool hasChauffeur = false;
   String chauffeurName = '';
   String chauffeurPhone = '';
-  int clientType = 1; // Default client type
+  String driversLicense = ''; // Champ ajouté pour le permis de conduire
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   List<String> carNames = ['Toyota Corolla', 'BMW X5', 'Tesla Model 3'];
@@ -29,6 +29,7 @@ class _ReservationFormPageState extends State<ReservationFormPage> {
     return selectedEndDate.difference(selectedStartDate).inDays;
   }
 
+  // Fonction pour soumettre la réservation
   Future<void> submitReservation() async {
     if (_formKey.currentState!.validate()) {
       try {
@@ -45,7 +46,7 @@ class _ReservationFormPageState extends State<ReservationFormPage> {
           'chauffeur': hasChauffeur
               ? {'chauffeurName': chauffeurName, 'chauffeurPhone': chauffeurPhone}
               : null,
-          'clientType': clientType,
+          'driversLicense': driversLicense, // Sauvegarde du permis de conduire
           'status': 'En attente',
         });
 
@@ -71,6 +72,7 @@ class _ReservationFormPageState extends State<ReservationFormPage> {
     }
   }
 
+  // Fonction pour traiter le paiement
   Future<void> processPayment() async {
     await Navigator.push(
       context,
@@ -120,15 +122,6 @@ class _ReservationFormPageState extends State<ReservationFormPage> {
                 onChanged: (value) => setState(() => carName = value!),
               ),
               SizedBox(height: 15),
-              // Type de client
-              _buildDropdownField(
-                label: 'Type de client',
-                value: clientType.toString(),
-                items: ['1', '2', '3'],
-                onChanged: (value) =>
-                    setState(() => clientType = int.parse(value!)),
-              ),
-              SizedBox(height: 15),
               // Lieu de récupération
               _buildTextField(
                 label: 'Lieu de récupération',
@@ -166,19 +159,17 @@ class _ReservationFormPageState extends State<ReservationFormPage> {
                     setState(() => selectedStartDate = date),
               ),
               SizedBox(height: 15),
-              // Date de fin avec validation du type client
+              // Date de fin avec durée maximale
               _buildDatePicker(
                 label: "Date de fin",
                 selectedDate: selectedEndDate,
                 onDateSelected: (date) {
-                  int maxDuration = clientType == 1
-                      ? 3
-                      : (clientType == 2 ? 7 : 365);
+                  int maxDuration = 30; // Limitation par défaut à 30 jours
                   if (date.difference(selectedStartDate).inDays > maxDuration) {
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(
                         content: Text(
-                          'Le type de client sélectionné limite la réservation à $maxDuration jours.',
+                          'La réservation ne peut pas dépasser $maxDuration jours.',
                         ),
                       ),
                     );
@@ -205,7 +196,7 @@ class _ReservationFormPageState extends State<ReservationFormPage> {
               SizedBox(height: 15),
               // Chauffeur
               SwitchListTile(
-                title: Text('Souhaitez-vous un chauffeur ?'),
+                title: Text('Existe t-il un deuxieme chauffeur ?'),
                 value: hasChauffeur,
                 onChanged: (value) => setState(() => hasChauffeur = value),
               ),
@@ -230,6 +221,16 @@ class _ReservationFormPageState extends State<ReservationFormPage> {
                 ),
                 SizedBox(height: 15),
               ],
+              // Permis de conduire
+              _buildTextField(
+                label: 'Numéro de permis de conduire',
+                icon: Icons.credit_card,
+                onChanged: (value) => driversLicense = value,
+                validator: (value) => value!.isEmpty
+                    ? 'Entrez votre numéro de permis de conduire'
+                    : null,
+              ),
+              SizedBox(height: 15),
               // Bouton de soumission
               _buildButton(
                 label: 'Soumettre la réservation',
@@ -241,7 +242,7 @@ class _ReservationFormPageState extends State<ReservationFormPage> {
               _buildButton(
                 label: 'Payer maintenant',
                 color: Colors.green,
-                onPressed: processPayment,
+                onPressed: processPayment, // Maintenant défini correctement
               ),
             ],
           ),
@@ -296,17 +297,18 @@ class _ReservationFormPageState extends State<ReservationFormPage> {
     required Function(DateTime) onDateSelected,
   }) {
     return ListTile(
-      title: Text("$label: ${selectedDate.toLocal()}".split(' ')[0]),
-      trailing: Icon(Icons.calendar_today),
+      contentPadding: EdgeInsets.zero,
+      leading: Icon(Icons.calendar_today),
+      title: Text('$label: ${selectedDate.toLocal()}'.split(' ')[0]),
       onTap: () async {
-        DateTime? pickedDate = await showDatePicker(
+        final DateTime? picked = await showDatePicker(
           context: context,
           initialDate: selectedDate,
-          firstDate: DateTime.now(),
+          firstDate: DateTime(2000),
           lastDate: DateTime(2101),
         );
-        if (pickedDate != null) {
-          onDateSelected(pickedDate);
+        if (picked != null && picked != selectedDate) {
+          onDateSelected(picked);
         }
       },
     );
@@ -315,12 +317,12 @@ class _ReservationFormPageState extends State<ReservationFormPage> {
   Widget _buildButton({
     required String label,
     required Color color,
-    required void Function() onPressed,
+    required VoidCallback onPressed,
   }) {
     return ElevatedButton(
       onPressed: onPressed,
       style: ElevatedButton.styleFrom(backgroundColor: color),
-      child: Text(label),
+      child: Text(label, style: TextStyle(fontSize: 16)),
     );
   }
 }

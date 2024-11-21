@@ -16,7 +16,7 @@ class ProfilePage extends StatelessWidget {
               print("Notification icon tapped");
             },
           ),
-        ], // Make the app bar more vibrant
+        ],
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -29,8 +29,7 @@ class ProfilePage extends StatelessWidget {
                   // Profile picture with a border and shadow
                   CircleAvatar(
                     radius: 60,
-                    backgroundImage: AssetImage('assets/profile_picture.png'),
-                    // Profile picture placeholder
+                    backgroundImage: AssetImage('assets/profile_picture.png'), // Replace with actual profile image
                     backgroundColor: Colors.grey[200],
                   ),
                   Positioned(
@@ -57,7 +56,7 @@ class ProfilePage extends StatelessWidget {
             SizedBox(height: 24),
             // Name text with larger font size and bold
             Text(
-              "nour lassaid",
+              "Nour Lassaid",  // Example name, replace with actual user name
               style: TextStyle(
                 fontSize: 28,
                 fontWeight: FontWeight.bold,
@@ -67,7 +66,7 @@ class ProfilePage extends StatelessWidget {
             SizedBox(height: 8),
             // Email with smaller and lighter font
             Text(
-              "nourlassaid@gmail.com",
+              "nourlassaid@gmail.com",  // Example email, replace with actual email
               style: TextStyle(
                 fontSize: 18,
                 color: Colors.grey[600],
@@ -160,7 +159,7 @@ class UpdateInfoPage extends StatelessWidget {
         title: Text('Update Info'),
       ),
       body: Center(
-        child: Text('Update information screen'),
+        child: Text('Update information screen'),  // Update info UI goes here
       ),
     );
   }
@@ -174,7 +173,7 @@ class LoginPage extends StatelessWidget {
         title: Text('Login'),
       ),
       body: Center(
-        child: Text('Login page'),
+        child: Text('Login page'),  // Login UI goes here
       ),
     );
   }
